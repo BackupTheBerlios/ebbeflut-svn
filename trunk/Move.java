@@ -62,7 +62,9 @@ public class Move implements Cloneable
     static private boolean isStart2(int x,int y)
     { return x==0 && y==0 || x==0 && y==1 || x==1 && y==0;
     }
-    
+    /**
+     * test wether card is on its supposed place?   => ca 4% slower
+     */
     public boolean isPossible()
     { if(!takeBackCalled) return false;
        
@@ -71,13 +73,9 @@ public class Move implements Cloneable
       
       if(owner.no==Const.NO_1)
       { if(fromX==Const.start1 && fromY==Const.yAll) 
-        { //here: test wether card is on its supposed place?            
-          if(board.startStack1.peek()==this.card)  
+        { //here: test wether card is on its supposed place?   => ca 4% slower
                return isStart1(toX,toY);
-          else return false;
         }
-        else
-        { if(board.peek(fromX,fromY)!=this.card)  return false;
           else if(toX==fromX && toY==fromY-1)
           { for(int m=0; m<5; m++)
             { if(m==fromX) continue;
@@ -101,16 +99,12 @@ public class Move implements Cloneable
                 break;
               }
             }
-          }//else if
-        }//else
+          }//else if        
       }
       else//no== NO_2
       { if(fromX==Const.start2 && fromY==Const.yAll) 
-        { if(board.startStack2.peek()==this.card)  return isStart2(toX,toY);
-          else return false;
+        { return isStart2(toX,toY);          
         }
-        else
-        { if(board.peek(fromX,fromY)!=this.card)  return false;
           else if(toX==fromX && toY==fromY+1)
           { for(int m=0; m<5; m++)
             { if(m==fromX) continue;
@@ -135,7 +129,6 @@ public class Move implements Cloneable
               }
             }
           }//else if
-        }//else
       }
        
       return possible;

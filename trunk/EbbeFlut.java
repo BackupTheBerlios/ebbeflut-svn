@@ -16,7 +16,7 @@ import java.util.Random;
 /** if you use netbeans then change the working directory to see the images under 
  *  tools-options-debuggingAndexecution-excecutiontype-externalexc-expert-workingdir;
  *  the same for debuggingAndExec-debuggertypes-defaultdebugging-expert--workingdir;
- * @author  Peter Karich peathal"bei"yahoo"Punkt"de
+ * @author  Peter Karich
  */
 public class EbbeFlut extends Frame 
 {
