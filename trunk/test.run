@@ -1,3 +1,9 @@
+@see thread 23 to compare the effectivity of methode AI.calc
+ (thread 21 if yo run EbbeFlut on the console without any mother process)
+ move from player one
+ best results are with JIT ca 2 sec
+ without ca 20 sec
+
 
 player1-human---------------
 Thread-3 needed 0.0050 sec

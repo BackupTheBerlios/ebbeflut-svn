@@ -53,23 +53,23 @@ public class AI extends Player
       if(EbbeFlut.chronical.lastMoves() || !EbbeFlut.chronical.fromBeginning()) 
         retPath=calcWithNoPopping();
       else if(no==Const.NO_1)
-      { retPath=calcWithPopping(new Move(startCard,4,4),new Path());
-        path=calcWithPopping(new Move(startCard,4,3),new Path());
+      { retPath=calc(new Move(startCard,4,4),new Path());
+        path=calc(new Move(startCard,4,3),new Path());
         if(path.getAssessment()>retPath.getAssessment())
         { retPath=path;
         }
-        path=calcWithPopping(new Move(startCard,3,4),new Path());
+        path=calc(new Move(startCard,3,4),new Path());
         if(path.getAssessment()>retPath.getAssessment())
         { retPath=path;
         }
       }
       else
-      { retPath=calcWithPopping(new Move(startCard,0,0),new Path());
-        path=calcWithPopping(new Move(startCard,0,1),new Path());
+      { retPath=calc(new Move(startCard,0,0),new Path());
+        path=calc(new Move(startCard,0,1),new Path());
         if(path.getAssessment()>retPath.getAssessment())
         { retPath=path;
         }
-        path=calcWithPopping(new Move(startCard,1,0),new Path());
+        path=calc(new Move(startCard,1,0),new Path());
         if(path.getAssessment()>retPath.getAssessment())
         { retPath=path;
         }
@@ -122,12 +122,12 @@ public class AI extends Player
       return assess;
     }
     
-    private Path calcWithPopping(Move move,Path p)
+    /*private Path calcWithPopping(Move move,Path p)
     {  Stack all=new Stack(); 
        
       all.push(move);
       return calc(p,all,0);
-    }
+    }*/
     
     /** calculates the moves without popping at the beginning
      *  this methode will call calc()
@@ -141,7 +141,7 @@ public class AI extends Player
       retPath.setAssessment(ass);              
       
       for(int i=0; i < all.size() && timer.isActive(); i++)
-      { newPath=calc(oldPath,all,i); 
+      { newPath=calc((Move)all.elementAt(i),oldPath); 
         if(newPath.getAssessment()>retPath.getAssessment())      retPath=newPath;            
       }
       
@@ -150,15 +150,11 @@ public class AI extends Player
     
     /** recursive calculation of: the moves = one path
      */
-    public Path calc(Path oP,Stack oldMoveStack,int n)
+    public Path calc(Move move,Path oP)
     {  Path oldPath=oP.getClone();
-       //Stack all=(Stack)oldMoveStack.clone();
-       Move move=(Move)oldMoveStack.elementAt(n);
        int ret=move.doIt();
       
-      //all.removeElementAt(n);      
-       //i hope allMoveStack won't change in getNewPossible; now clone the MoveStack
-      Stack all=Move.getNewPossible(oldMoveStack,this,move);   
+      Stack all=Move.getAllPossible(this);   
       oldPath.push(move);
       
       if(all.empty()) 
@@ -168,11 +164,11 @@ public class AI extends Player
       }
       
        Path newPath,retPath;
-       int i=0;//is it better to count from all.size() downstairs?
+      
       //iter has next cause all is not empty!
-      retPath=calc(oldPath,all,i);
-      for(i=1; i < all.size() && timer.isActive(); i++)
-      { newPath=calc(oldPath,all,i);
+      retPath=calc((Move)all.elementAt(0),oldPath);
+      for(int i=1; i < all.size() && timer.isActive(); i++)
+      { newPath=calc((Move)all.elementAt(i),oldPath);
         if(newPath.getAssessment()>retPath.getAssessment())
         { retPath=newPath;
         }    
