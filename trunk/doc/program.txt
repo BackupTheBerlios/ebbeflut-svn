@@ -1,0 +1,13 @@
+Download EbbeFlut from http://ebbeflut.berlios.de
+(If the server seams down, please try again a few 
+minutes later.)
+You could find there a pdf file for german and 
+for english users: installation, explanation etc.
+It is normal that computer player sometimes 
+thinks one minute, but really more is not usual.
+So send the log and error output (copy and paste 
+should work from "Files" Menuentry) and a short 
+description of what you have done, if an 
+exception occurs to 
+sourcemaker2000-berlios@yahoo.de.
+
