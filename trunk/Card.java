@@ -9,9 +9,9 @@
  */
 
 /** represent a card; 
- *  
+ *  @author  peter karich
  */
-public class Card
+public class Card implements Cloneable
 { char c;
   int i;
   /**position is neccessary for the class "Move"
@@ -69,7 +69,7 @@ public class Card
     return tmp.getOwner().no==owner.no && (tmp.c==c || tmp.i == i);
   }  
   
-  public Card getClone()
+  public Object clone()
   { Card tmp=new Card(c,i,owner);
     tmp.setPosition(x,y);
     return tmp;

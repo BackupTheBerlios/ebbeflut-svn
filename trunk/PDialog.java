@@ -17,7 +17,7 @@ import java.awt.event.*;
 
 /** for new game, and other questions or interactions
  *
- * @author  peter karich peathal@yahoo.de
+ * @author  peter karich 
  */
 public class PDialog extends MyDialog
 {

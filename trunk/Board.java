@@ -16,6 +16,7 @@ import java.util.Vector;
  *                        ...........;
  *  so you get "yx" with 0<y<5;0<x<5;
  *  use THIS class for new computer oponents, instead of GraphicBoard
+ *  @author  peter karich
  */
 public class Board
 { 

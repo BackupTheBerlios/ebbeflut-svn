@@ -16,7 +16,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 /** the actionListener for all buttons on the visible board
- * @author  peter
+ * @author  peter karich
  */  
 class BoardButtonAL implements ActionListener
 {   Card firstCard;

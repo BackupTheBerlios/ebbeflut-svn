@@ -66,7 +66,7 @@ public class OwnerField extends Field
     Card card;
     
     for(int i=0; i<cards.size(); i++)//Iterator iter=cards.iterator(); iter.hasNext();)
-    { card=((Card)cards.elementAt(i)).getClone();
+    { card=(Card)((Card)cards.elementAt(i)).clone();
       card.setOwner(newOwner);
       tmp.cards.push(card);
     }

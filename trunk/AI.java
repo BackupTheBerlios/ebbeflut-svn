@@ -14,7 +14,7 @@
 
 /**
  * Artificial "Intelligence" :-)
- * @author  peter
+ * @author  peter karich
  */
 public class AI extends Player
 {   private Board board;
@@ -115,7 +115,7 @@ public class AI extends Player
        
       if(doItMoveRet==Move.PROMPT) assess=-60;
        
-      assess+=3*oldPathSize+60*board.getFinishStack(this.no).getSize()              
+      assess+=3*(oldPathSize-1)+60*board.getFinishStack(this.no).getSize()              
               -60*board.getRemovedStack(this.no).getSize()              
               +2*Move.getCoveredAssessment(this)+Move.getFreeStartAssessment(this);
       
@@ -150,14 +150,15 @@ public class AI extends Player
     
     /** recursive calculation of: the moves = one path
      */
-    public Path calc(Path oP,Stack all,int n)
+    public Path calc(Path oP,Stack oldMoveStack,int n)
     {  Path oldPath=oP.getClone();
-       Move move=(Move)all.elementAt(n);
+       //Stack all=(Stack)oldMoveStack.clone();
+       Move move=(Move)oldMoveStack.elementAt(n);
        int ret=move.doIt();
-      all.removeElementAt(n);
       
-      all=Move.getNewPossible(all,this,move);
-   
+      //all.removeElementAt(n);      
+       //i hope allMoveStack won't change in getNewPossible; now clone the MoveStack
+      Stack all=Move.getNewPossible(oldMoveStack,this,move);   
       oldPath.push(move);
       
       if(all.empty()) 
@@ -167,7 +168,7 @@ public class AI extends Player
       }
       
        Path newPath,retPath;
-       int i=0;
+       int i=0;//is it better to count from all.size() downstairs?
       //iter has next cause all is not empty!
       retPath=calc(oldPath,all,i);
       for(i=1; i < all.size() && timer.isActive(); i++)

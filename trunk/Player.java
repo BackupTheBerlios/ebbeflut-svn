@@ -56,7 +56,7 @@ abstract class Player
   }
   
   public boolean isOwnerOf(Card card)
-  { if(card==null) return false;
+  { //if(card==null) return false;
     return no==card.getOwner().no;
   }
   

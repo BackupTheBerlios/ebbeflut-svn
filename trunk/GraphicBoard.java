@@ -100,9 +100,10 @@ public class GraphicBoard extends Board implements ActionListener
     Panel panel=new Panel();
     panel.setLayout(new GridLayout(5,5));
 
-    //depends from boards orientation
-    for(int a=0; a<5; a++)
-    { for(int b=0; b<5; b++)
+    //depends from boards orientation; swap x and y is neccessary, cause we
+    //add the buttons line by line 
+    for(int b=0; b<5; b++)
+    { for(int a=0; a<5; a++)
       { panel.add(buttonBoard[a][b]);
       }
     }

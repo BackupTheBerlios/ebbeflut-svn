@@ -17,7 +17,7 @@ import java.awt.*;
 
 /** shows the first card in its color, to layout the boardButtons
  *
- * @author  peter
+ * @author  peter karich
  */
 public class CardField extends Field
 { private Card first=null;
@@ -82,7 +82,7 @@ public class CardField extends Field
   { CardField tmp=new CardField(x,y);
     
     for(int i=0; i<cards.size(); i++)
-      tmp.cards.push(((Card)cards.elementAt(i)).getClone());
+      tmp.cards.push(((Card)cards.elementAt(i)).clone());
     return tmp;
   }  
   

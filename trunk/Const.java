@@ -15,7 +15,7 @@
 import java.awt.*;
 
 /** some constants useful for the game
- * @author peter
+ * @author  peter karich
  */
 public class Const
 { 

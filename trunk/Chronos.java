@@ -16,7 +16,7 @@
 /** chronical order to identify wether a card is popped, placed, moved
  *  and wether the turn is finished or the complete game
  * 
- * @author  peter
+ * @author  peter karich
  */
 public class Chronos 
 {

@@ -8,13 +8,14 @@ folgende Verbesserungen sind noetig/moeglich:
  Methode schreiben -> Move.getPossible, aber welche fallen dann weg??
 -logfile fuer die Partie schreiben-> also Zug von bis ..., -> abrufbar im Program -jederzeit
 -ebbe als server, bzw netzfaehig machen, eventuell chat fenster?
--einstellungen playBackloop für jeden spieler speichern
+-einstellungen playBackloop fï¿½r jeden spieler speichern
+-moegliche systemverschiedene (zaurus) einstellungen laden(groesse)
 -cancel button bei settings
 -komplette Path aller Moves nach jeden Zug speichern bzw. fuer netzfaigkeit implementieren
  damit man also nur den Path schicken muss, und dieser dann nur noch auf dem 
  fernen client ausgefuehrt werden muss.
 -thinking vom computer anzeigen
--anzeigen wieviele karten und welcher farbe diese sind
+-anzeigen wieviele karten und welcher farbe diese sind - auf beliebigen feld
 -spielregel realisieren, das vor dem platzieren auch gesetzt werden kann
 -wie kann man am rand (vor gleiche karten=> zug moeglich) eine karte loeschen
  (wrong move)

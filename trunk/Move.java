@@ -16,13 +16,13 @@
  *
  * @author  peter karich
  */
-public class Move 
+public class Move implements Cloneable
 {   private Card card;
     public int fromY,fromX;
-    Player owner;
+    private Player owner;
     public int toX,toY;
     static private Board board;
-    static public int NOTHING=0, FINISH=1, PROMPT=2, FIRST=3;
+    static public int NOTHING=0, FINISH=1, PROMPT=2, FIRST=3, TAKE_BACK_WASNT_CALLED=4;
     
     /** Creates a new instance of Move;
      * you have to ensure that this coord are possible and there 
@@ -47,6 +47,14 @@ public class Move
     { return card;
     }
     
+    private boolean isFromStartStack1()
+    { return fromX==Const.start1 && fromY==Const.yAll;
+    }
+    
+    private boolean isFromStartStack2()
+    { return fromX==Const.start2 && fromY==Const.yAll;
+    }
+    
     static private boolean isStart1(int x,int y)
     { return x==4 && y==4 || x==4 && y==3 || x==3 && y==4;
     }
@@ -56,74 +64,94 @@ public class Move
     }
     
     public boolean isPossible()
-    {  boolean possible=false;
+    { if(!takeBackCalled) return false;
+       
+       boolean possible=false;
        Card tmp;
       
       if(owner.no==Const.NO_1)
-      { if(fromX==Const.start1 && fromY==Const.yAll) return isStart1(toX,toY);
-        else if(toX==fromX && toY==fromY-1)
-        { for(int m=0; m<5; m++)
-          { if(m==fromX) continue;
-            
-            tmp=board.peek(m,fromY);
-            if(tmp==null) continue;
-            if(tmp.equals(getCard())) 
-            { possible=true;
-              break;
-            }
-          }  
+      { if(fromX==Const.start1 && fromY==Const.yAll) 
+        { //here: test wether card is on its supposed place?            
+          if(board.startStack1.peek()==this.card)  
+               return isStart1(toX,toY);
+          else return false;
         }
-        else if(toX==fromX-1 && toY==fromY)
-        { for(int n=0; n<5; n++)
-          { if(n==fromY) continue;
-            
-            tmp=board.peek(fromX,n);
-            if(tmp==null) continue;
-            if(tmp.equals(getCard())) 
-            { possible=true;
-              break;
-            }
+        else
+        { if(board.peek(fromX,fromY)!=this.card)  return false;
+          else if(toX==fromX && toY==fromY-1)
+          { for(int m=0; m<5; m++)
+            { if(m==fromX) continue;
+              
+              tmp=board.peek(m,fromY);
+              if(tmp==null) continue;
+              if(tmp.equals(getCard())) 
+              { possible=true;
+                break;
+              }
+            }  
           }
-        }
+          else if(toX==fromX-1 && toY==fromY)
+          { for(int n=0; n<5; n++)
+            { if(n==fromY) continue;
+              
+              tmp=board.peek(fromX,n);
+              if(tmp==null) continue;
+              if(tmp.equals(getCard())) 
+              { possible=true;
+                break;
+              }
+            }
+          }//else if
+        }//else
       }
       else//no== NO_2
-      { if(fromX==Const.start2 && fromY==Const.yAll) return isStart2(toX,toY);
-        else if(toX==fromX && toY==fromY+1)
-        { for(int m=0; m<5; m++)
-          { if(m==fromX) continue;
-            
-            tmp=board.peek(m,fromY);
-            if(tmp==null) continue;
-            if(tmp.equals(getCard())) 
-            { possible=true;
-              break;
+      { if(fromX==Const.start2 && fromY==Const.yAll) 
+        { if(board.startStack2.peek()==this.card)  return isStart2(toX,toY);
+          else return false;
+        }
+        else
+        { if(board.peek(fromX,fromY)!=this.card)  return false;
+          else if(toX==fromX && toY==fromY+1)
+          { for(int m=0; m<5; m++)
+            { if(m==fromX) continue;
+              
+              tmp=board.peek(m,fromY);
+              if(tmp==null) continue;
+              if(tmp.equals(getCard())) 
+              { possible=true;
+                break;
+              }
             }
           }
-        }
-        else if(toX==fromX+1 && toY==fromY)
-        { for(int n=0; n<5; n++)
-          { if(n==fromY) continue;
-            
-            tmp=board.peek(fromX,n);
-            if(tmp==null) continue;
-            if(tmp.equals(getCard())) 
-            { possible=true;
-              break;
+          else if(toX==fromX+1 && toY==fromY)
+          { for(int n=0; n<5; n++)
+            { if(n==fromY) continue;
+              
+              tmp=board.peek(fromX,n);
+              if(tmp==null) continue;
+              if(tmp.equals(getCard())) 
+              { possible=true;
+                break;
+              }
             }
-          }
-        }
+          }//else if
+        }//else
       }
        
       return possible;
     }
     
     int returnStatus;
+    boolean takeBackCalled=true;
     
     /** after calling this methode you can call takeBack,
       * but its your work to prevent clashs
      **/
     public int doIt()
-    { Card tmp;      
+    { if(!takeBackCalled) return TAKE_BACK_WASNT_CALLED;
+      takeBackCalled=false;
+      
+      Card tmp;      
       returnStatus=NOTHING;
       
       if(owner.no==Const.NO_1)
@@ -188,7 +216,8 @@ public class Move
      * @return the Chronos.status ! NOT the Move.doIt return values!!
      */
     public int takeBack()
-    { Card tmp;
+    { takeBackCalled=true;
+       Card tmp;
       
       if(owner.no==Const.NO_1)
       { if(isStart2(toX,toY))
@@ -224,19 +253,19 @@ public class Move
       return Chronos.PLACED;
     }
     
-    static private Stack newMoves=new Stack(10,5);
     static private Move moveTmp;
     
     /** call move.doIt before calling this routine!
      */
-    static public Stack getNewPossible(Stack old, Player player,Move move)
-    {  boolean uncoveredH=false, uncoveredV=false, movedH=false,movedV=false;
+    static public Stack getNewPossible(Stack old, Player player,Move doneMove)
+    {  Stack newMoves=new Stack(10,5);
+       boolean uncoveredH=false, uncoveredV=false, movedH=false,movedV=false;
        int moveDir=+1; // move direction for player two       
       if(player.no==Const.NO_1) moveDir=-1;
       
        Card uncoveredCard=null, tmpCard;       
        //is this move vertical?
-       boolean verticalMove=move.fromY == move.toY; 
+       boolean verticalMove=doneMove.fromY == doneMove.toY; 
        
       //re use newMoves
       newMoves.clear();
@@ -244,27 +273,30 @@ public class Move
       //remove all impossible moves now, do Move.doIt before!!!
       for(int i=0; i < old.size(); i++)
       { moveTmp=(Move)old.elementAt(i);
-        if(!moveTmp.isPossible()) newMoves.add(moveTmp);        
+        if(moveTmp.isPossible()) 
+            newMoves.add(moveTmp);        
         //System.out.println(i+" "+moveTmp.toString());
       }
       
-      //if move is a start move
-      if(   (isStart1(move.toX,move.toY) && player.no==Const.NO_1)
-         || (isStart2(move.toX,move.toY) && player.no==Const.NO_2))
+      //if doneMove is a start move
+      if(   (doneMove.isFromStartStack1() && player.no==Const.NO_1)
+         || (doneMove.isFromStartStack2() && player.no==Const.NO_2))
       { //let both uncovered == false
         movedH=true;
         movedV=true;
       }
-      //if move.to are "off board" values, or finish moves
       else
-      { tmpCard=board.peek(move.fromX,move.fromY);
-        if(player.isOwnerOf(tmpCard)) uncoveredCard=tmpCard;
+      { tmpCard=board.peek(doneMove.fromX,doneMove.fromY);
+        
+        if(tmpCard!=null && player.isOwnerOf(tmpCard)) uncoveredCard=tmpCard;
       
-        if( (isStart1(move.toX,move.toY) && player.no==Const.NO_2)
-         || (isStart2(move.toX,move.toY) && player.no==Const.NO_1)
-         || move.toX>=5 || move.toY>=5 || move.toX <0 || move.toY<0)
+        //if doneMove.to are "off board" values, or finish moves
+        if( (isStart1(doneMove.toX, doneMove.toY) && player.no==Const.NO_2)
+         || (isStart2(doneMove.toX, doneMove.toY) && player.no==Const.NO_1)
+         || doneMove.toX>=5 || doneMove.toY>=5 || doneMove.toX <0 || doneMove.toY<0)
         { if(uncoveredCard!=null) { uncoveredH=true;  uncoveredV=true;  }
         }
+        //"normal moves"
         else
         { if(uncoveredCard!=null) 
           { uncoveredH=true;  uncoveredV=true;  
@@ -279,29 +311,29 @@ public class Move
       //push covered Card themself only for one time in the newMoves stack
        boolean firstHorizontal=true, firstVertical=true;       
            
-      //calculate the moves for the uncovered card with location move.fromX,fromY
+      //calculate the moves for the uncovered card with location doneMove.fromX,fromY
       if(uncoveredH || uncoveredV)
       { for(int m=0; m<5; m++)
         { if(uncoveredH)
           { //the real board "horizontal"
-            if(move.fromX != m) // don't pick up the uncovered themself
-            { tmpCard=board.peek(m, move.fromY);
+            if(doneMove.fromX != m) // don't pick up the uncovered themself
+            { tmpCard=board.peek(m, doneMove.fromY);
               if(tmpCard!=null &&tmpCard.equals(uncoveredCard))
-              { newMoves.push(new Move(tmpCard, m,move.fromY+moveDir));
+              { newMoves.push(new Move(tmpCard, m,doneMove.fromY+moveDir));
                 if(firstHorizontal) 
-                    newMoves.push(new Move(uncoveredCard, move.fromX, move.fromY+moveDir)); //push it only one time
+                    newMoves.push(new Move(uncoveredCard, doneMove.fromX, doneMove.fromY+moveDir)); //push it only one time
                 firstHorizontal=false;
               }
             }
           }
           if(uncoveredV)
           { //vertical
-            if(move.fromY != m)
-            { tmpCard=board.peek(move.fromX, m);              
+            if(doneMove.fromY != m)
+            { tmpCard=board.peek(doneMove.fromX, m);              
               if(tmpCard!=null &&tmpCard.equals(uncoveredCard))
-              { newMoves.push(new Move(tmpCard, move.fromX+moveDir, m));              
+              { newMoves.push(new Move(tmpCard, doneMove.fromX+moveDir, m));              
                 if(firstVertical) 
-                    newMoves.push(new Move(uncoveredCard, move.fromX+moveDir, move.fromY));
+                    newMoves.push(new Move(uncoveredCard, doneMove.fromX+moveDir, doneMove.fromY));
                 firstVertical=false;
               }
             }
@@ -312,30 +344,30 @@ public class Move
       if(movedH || movedV)
       { firstHorizontal=true;
         firstVertical=true;
-        Card movedCard=move.getCard();
+        Card movedCard=doneMove.getCard();
         
-        //calculate the moves for the moved card with actual location move.toX,toY
+        //calculate the moves for the moved card with actual location doneMove.toX,toY
         for(int m=0; m<5; m++)
         { //the real board "horizontal"
           if(movedH)
-          { if(move.toX != m) // don't pick up the uncovered themself
-            { tmpCard=board.peek(m, move.toY);          
+          { if(doneMove.toX != m) // don't pick up the uncovered themself
+            { tmpCard=board.peek(m, doneMove.toY);          
               if(tmpCard!=null &&tmpCard.equals(movedCard))
-              { newMoves.push(new Move(tmpCard, m,move.toY+moveDir));
+              { newMoves.push(new Move(tmpCard, m,doneMove.toY+moveDir));
                 if(firstHorizontal) 
-                    newMoves.push(new Move(movedCard, move.toX, move.toY+moveDir)); //push it only one time
+                    newMoves.push(new Move(movedCard, doneMove.toX, doneMove.toY+moveDir)); //push it only one time
                 firstHorizontal=false;
               }
             }
           }
           if(movedV)
           { //vertical
-            if(move.toY != m)
-            { tmpCard=board.peek(move.toX, m);
+            if(doneMove.toY != m)
+            { tmpCard=board.peek(doneMove.toX, m);
               if(tmpCard!=null &&tmpCard.equals(movedCard))
-              { newMoves.push(new Move(tmpCard, move.toX+moveDir, m));              
+              { newMoves.push(new Move(tmpCard, doneMove.toX+moveDir, m));              
                 if(firstVertical) 
-                    newMoves.push(new Move(movedCard, move.toX+moveDir, move.toY));
+                    newMoves.push(new Move(movedCard, doneMove.toX+moveDir, doneMove.toY));
                 firstVertical=false;
               }
             }
@@ -476,5 +508,9 @@ public class Move
     
     public String toString()
     { return card.toString()+" from "+fromX+","+fromY+" to "+toX+","+toY;
+    }
+    
+    public Object clone()
+    { return new Move((Card)card.clone(), toX,  toY);
     }
 }

@@ -16,13 +16,13 @@ import java.util.Random;
 /** if you use netbeans then change the working directory to see the images under 
  *  tools-options-debuggingAndexecution-excecutiontype-externalexc-expert-workingdir;
  *  the same for debuggingAndExec-debuggertypes-defaultdebugging-expert--workingdir;
- * @author  Peter Karich
+ * @author  Peter Karich peathal"bei"yahoo"Punkt"de
  */
 public class EbbeFlut extends Frame 
 {
   static private PDialog newGameDialog;
   
-  //if you init the constructor with long value, than you can "play god"
+  //if you init the constructor with long value, than you can "play god"|CHEAT|
   static private Random rand=new Random(60);
   static private BoardButtonAL actionListener=new BoardButtonAL();
   

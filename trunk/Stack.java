@@ -5,6 +5,7 @@
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
+//SORRY TO SUN: I HAVE TO CHANGE YOUR STACK CLASS!!!
 
 /**
  * The <code>Stack</code> class represents a last-in-first-out 
@@ -21,7 +22,7 @@
  * @version 1.25, 12/03/01
  * @since   JDK1.0
  */
-public class Stack extends java.util.Vector 
+public class Stack extends java.util.Vector implements Cloneable
 {
     /**
      * Creates an empty Stack.
@@ -130,7 +131,14 @@ public class Stack extends java.util.Vector
 	}
 	return -1;
     }
-
+ 
+    //|CHANGE|
+    public synchronized Object clone()
+    { Stack s=(Stack)super.clone();
+      s.capacityIncrement=capacityIncrement;
+      return s;
+    }
+    
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
     private static final long serialVersionUID = 1224463164541339165L;
 }
