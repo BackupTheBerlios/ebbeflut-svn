@@ -14,7 +14,7 @@
 
 /**
  * Artificial "Intelligence" :-)
- * @author  peter
+ * @author  peter karich
  */
 public class AI extends Player
 {   private Board board;
