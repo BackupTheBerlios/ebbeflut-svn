@@ -93,17 +93,24 @@ public class CardField extends Field
     return first.getColor();    
   }
    
-  //FOR LATER USAGE
-  //IT IS BETTER TO FIRE DIRECTLY THE COLOR (CHANGE) TO THE boardButtons
- /** @return color of the second card
-   * @return null if Cards-stack size is smaller
-   * 
-  public Color get2ndColor()
-  { if(cards.size()<2) return null;
-   
-    Card tmp=(Card)cards.pop();
-    Color colour=((Card)cards.peek()).getColor();
-    cards.push(tmp);
-    return colour;
-  }*/
+  public Panel getStackPanel()
+  {  Panel cardPanel = new Panel();
+     int MAX=5;
+    cardPanel.setLayout(new GridLayout(MAX,1));    
+    boolean hide=false;
+    Card tmpCard;
+    Button button;
+    
+    for(int i=cards.size()-1; i>= (cards.size()-MAX) && i>=0; i--)
+    { tmpCard=(Card)cards.elementAt(i);
+      button=new Button();
+      GraphicBoard.setGraphics(button,tmpCard.getColor(),"?");
+      if(!hide) 
+      { button.setLabel(tmpCard.toString());        
+        hide=true;
+      }
+      cardPanel.add(button);      
+    }
+    return cardPanel;
+  }
 }

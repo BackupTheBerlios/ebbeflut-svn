@@ -42,6 +42,8 @@ public class Const
   static public int NC=15; //Number of all Cards, for one! player //|CHEAT| NC=15;
   static public int NO_1=1,NO_2=2;
   static public Color COLOR1=Color.blue, COLOR2=Color.yellow;
+  static public Color MARKE_COLOR=Color.red;  
+  static public Color NORMAL_BACKGROUND=Color.lightGray;
   static public Color ZAURUS_COLOR1=Color.black, ZAURUS_COLOR2=Color.black;
   
   static public String player1File="dat/settingsPlayer1";

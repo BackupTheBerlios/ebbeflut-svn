@@ -101,6 +101,13 @@ public class PDialog extends MyDialog
       pack();
     }
     
+    public PDialog(Frame parent, Panel panel, boolean modal,String option)
+    { this(parent,"",modal,option);
+      removeAll();
+      add(panel, BorderLayout.NORTH);
+      add(buttonPanel, BorderLayout.SOUTH);      
+      pack();
+    }
     
     /** the action listener: default actions for cancel and ok button*/
     class PActionListener implements ActionListener

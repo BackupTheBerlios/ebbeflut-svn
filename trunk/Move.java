@@ -55,13 +55,14 @@ public class Move implements Cloneable
     { return fromX==Const.start2 && fromY==Const.yAll;
     }
     
-    static private boolean isStart1(int x,int y)
+    static public boolean isStart1(int x,int y)
     { return x==4 && y==4 || x==4 && y==3 || x==3 && y==4;
     }
     
-    static private boolean isStart2(int x,int y)
+    static public boolean isStart2(int x,int y)
     { return x==0 && y==0 || x==0 && y==1 || x==1 && y==0;
     }
+    
     /**
      * test wether card is on its supposed place?   => ca 4% slower
      */
@@ -206,9 +207,8 @@ public class Move implements Cloneable
     
     /**be sure that you call doIt before this methode
      * is it better to give takeBack Move as argument??
-     * @return the Chronos.status ! NOT the Move.doIt return values!!
      */
-    public int takeBack()
+    public void takeBack()
     { takeBackCalled=true;
        Card tmp;
       
@@ -221,7 +221,7 @@ public class Move implements Cloneable
         { tmp=board.pop(toX,toY);
           if(fromX==Const.start1)
           { board.getStartStack1().push(tmp);
-            return Chronos.POPPED;
+            return;// Chronos.SHOWED;
           }
         }         
       }
@@ -234,16 +234,14 @@ public class Move implements Cloneable
         { tmp=board.pop(toX,toY);        
           if(fromX==Const.start2)
           { board.getStartStack2().push(tmp);
-            return Chronos.POPPED;
+            return;// Chronos.SHOWED;
           }
         }
       }
 
-      if(owner.no==Const.NO_1 && fromX == Const.start1)      board.getStartStack1().push(tmp);
-      else if(owner.no==Const.NO_2 && fromX == Const.start2) board.getStartStack2().push(tmp);
-      else                                             board.push(fromX, fromY, tmp);
+      board.push(fromX, fromY, tmp);
       
-      return Chronos.PLACED;
+      return; //Chronos.SHOWED;
     }
     
     static private Move moveTmp;
@@ -381,9 +379,14 @@ public class Move implements Cloneable
       Card tmp;
       
       if(player.no==Const.NO_1)
-      { //cancel all moves near the left and upper edge off board
-        for(m=1; m<5; m++)
-        { for(n=1; n<5; n++)
+      { tmp=board.getStartStack1().peek();
+        if(tmp!=null)
+        { all.push(new Move(tmp,4,4));
+          all.push(new Move(tmp,4,3));
+          all.push(new Move(tmp,3,4));        
+        }
+        for(m=0; m<5; m++)
+        { for(n=0; n<5; n++)
           { tmp=board.peek(m,n);
             if(tmp==null) continue;
             if(!player.isOwnerOf(tmp)) continue;
@@ -394,28 +397,16 @@ public class Move implements Cloneable
             if(move.isPossible()) all.push(move);
           }
         }
-        //now look only for the possible edge moves
-        //moves like card.withPos(0 1).equals(card.withPos(0 4)) are not possible
-        m=0;
-        for(n=2; n<5; n++)
-        { tmp=board.peek(m,n);
-          if(tmp==null) continue;
-          if(!player.isOwnerOf(tmp)) continue;
-          move=new Move(tmp, m,  n-1);
-          if(move.isPossible()) all.push(move);
-        }
-        n=0;
-        for(m=2; m<5; m++)
-        { tmp=board.peek(m,n);
-          if(tmp==null) continue;
-          if(!player.isOwnerOf(tmp)) continue;
-          move=new Move(tmp, m-1,n);
-          if(move.isPossible()) all.push(move);           
-        }
       }
       else //if no==2
-      { for(m=0; m<4; m++)
-        { for(n=0; n<4; n++)
+      { tmp=board.getStartStack2().peek();
+        if(tmp!=null)
+        { all.push(new Move(tmp,0,0));
+          all.push(new Move(tmp,0,1));
+          all.push(new Move(tmp,1,0));        
+        }
+        for(m=0; m<5; m++)
+        { for(n=0; n<5; n++)
           { tmp=board.peek(m,n);
             if(tmp==null) continue;
             if(!player.isOwnerOf(tmp)) continue;
@@ -424,23 +415,7 @@ public class Move implements Cloneable
             move=new Move(tmp, m,  n+1);
             if(move.isPossible()) all.push(move);
           }
-        }
-        m=4;
-        for(n=0; n<3; n++)
-        { tmp=board.peek(m,n);
-          if(tmp==null) continue;
-          if(!player.isOwnerOf(tmp)) continue;
-          move=new Move(tmp, m,  n+1);
-          if(move.isPossible()) all.push(move);           
-        }
-        n=4;
-        for(m=0; m<3; m++)
-        { tmp=board.peek(m,n);
-          if(tmp==null) continue;
-          if(!player.isOwnerOf(tmp)) continue;
-          move=new Move(tmp, m+1,n);
-          if(move.isPossible()) all.push(move);           
-        }
+        }        
       }       
       return all;
     }

@@ -36,8 +36,10 @@ public class SettingsDialog extends MyDialog
     { super(owner,true);
       this.writeSettings=writeSettings;
       oldPlayer=oP;
-      Button button=new Button("save");
-      button.addActionListener(new ButtonAL());
+       Button saveB=new Button("save"),cancelB=new Button("cancel");
+       
+      saveB.addActionListener(new ButtonAL());
+      cancelB.addActionListener(new ButtonAL());
       
       setLayout(new GridLayout(4,2));
       
@@ -64,7 +66,7 @@ public class SettingsDialog extends MyDialog
       add(nameWindowHead);      add(nameWindow);
       add(kindWindowHead);      add(kindWindow);
       add(colorWindowHead);     add(colorWindow);
-      add(button);
+      add(saveB);                add(cancelB);      
       
       addWindowListener(new WindowAdapter()
       {   public void windowClosing(WindowEvent evt)
@@ -84,7 +86,9 @@ public class SettingsDialog extends MyDialog
     {   /** Invoked when an action occurs.
          */
         public void actionPerformed(ActionEvent e) 
-        {  Color color;
+        { if(e.getActionCommand().equals("cancel")) doClose(cancel);
+          
+           Color color;
            String name=nameWindow.getText(),colString;
            int no=oldPlayer.no;
            

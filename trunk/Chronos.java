@@ -21,12 +21,13 @@
 public class Chronos 
 {
     int moveNo=0;
-    boolean finishedGame, finishedTurn, retFromBeginning,lastMoves;
+    boolean finishedGame, finishedTurn, retFromBeginning, lastMoves;
 	
     /** a whole turn is splitted into several steps
      */
-    static int FRESH=-1, SEARCHED=0, POPPED=1, PLACED=2, CLICKED=3, MOVED=4, status;
-   
+    static int FRESH=0, SHOWED=1, STARTCARD_PLACED=2, status;
+    private boolean sthWasClicked;
+    
     public Chronos() 
     { status=FRESH;
       finishedGame=false;
@@ -38,9 +39,10 @@ public class Chronos
     public void newTurn(boolean fromBeg)
     { finishedTurn=false;          
       retFromBeginning=true;//!!important -> this var is false if this player will see forgotten moves of the other one. But if he had forgotten moves than he shouldn't able to see forgotten moves of the other player
+      sthWasClicked=false;
       
       if(fromBeg) status=FRESH;      
-      else        status=PLACED;            
+      else        status=STARTCARD_PLACED;
     }    
     
     public void setStatus(int s)
@@ -54,12 +56,9 @@ public class Chronos
     { String tmp="undefined";
       
       switch(status)
-      { case -1: tmp="fresh"; break;
-        case 0: tmp="searched"; break;
-        case 1: tmp="popped"; break;
-        case 2: tmp="placed"; break;
-        case 3: tmp="clicked"; break;
-        case 4: tmp="moved"; break;
+      { case 0: tmp="none"; break;
+        case 1: tmp="showed"; break;
+        case 2: tmp="placed"; break;        
       }
       return tmp;
     }
@@ -76,33 +75,25 @@ public class Chronos
     { return finishedGame;
     }
      
+    public void setSthWasClicked()
+    { sthWasClicked=false;
+    }    
+
+    public boolean sthWasClicked()
+    { return sthWasClicked;
+    } 
+    
     public boolean fresh()
     { return status==FRESH;
-    }
+    }    
     
-    /**no need!
-     */
-    public boolean searched()
-    { return status==SEARCHED;
-    }
+    public boolean showed()
+    { return status==SHOWED;
+    }    
     
-    public boolean popped()
-    { return status==POPPED;
-    }
-    
-    public boolean placed()
-    { return status==PLACED;
-    }
-    
-    public boolean clicked()
-    { return status==CLICKED;
-    }
-
-    /**no need until yet
-     */
-    public boolean moved()
-    { return status==MOVED;
-    }
+    public boolean placedStartCard()
+    { return status==STARTCARD_PLACED;
+    }            
     
     public boolean isTurnFinished()
     { return finishedTurn;
@@ -127,7 +118,7 @@ public class Chronos
     
     public void nextMove()    
     { moveNo++;      
-      if(moveNo>=Const.NC*2) finishedGame=true;
+      if(moveNo>=Const.NC*2) setGameIsFinished();
     }
     
     public void prevMove()    

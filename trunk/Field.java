@@ -59,10 +59,14 @@ abstract public class Field
   //now graphical routines section
   //---------------------------------------------------
     
-  /** actionListener is better than using the buttons directly
+  /** actionListener is better than using the buttons as variables in this class directly
    */
   public void setActionListener(ActionListener a)
   { action=a;
+  }
+  
+  public ActionListener getActionListener()
+  { return action;
   }
   
   abstract public String getLabel();

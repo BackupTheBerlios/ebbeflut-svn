@@ -20,8 +20,7 @@ import java.awt.event.*;
  * @author  peter
  */
 public class GraphicBoard extends Board implements ActionListener
-{
-  /**only ONE Board is visible, so we have to make the buttons static
+{ /**only ONE Board is visible, so we have to make the buttons static
    */
   static Button buttonBoard[][];
   static Button finish1,finish2,start1,start2;
@@ -30,8 +29,14 @@ public class GraphicBoard extends Board implements ActionListener
   /** creates a new instance of the graphical version of our board
    */
   public GraphicBoard(ActionListener al,Player player1,Player player2)
-  { super();
+  { super();    
     setActionListenerToBoard(this);
+    startStack1.setActionListener(this);
+    startStack2.setActionListener(this);
+    finishStack1.setActionListener(this);
+    finishStack2.setActionListener(this);
+    removedCards1.setActionListener(this);
+    removedCards2.setActionListener(this);
     if(!buttonInit) 
     { buttonInit=true;
       buttonBoard=new Button[5][];
@@ -66,16 +71,21 @@ public class GraphicBoard extends Board implements ActionListener
       start2.setLabel("");      
     }
     
-    startStack1.setActionListener(this);
-    startStack2.setActionListener(this);
-    finishStack1.setActionListener(this);
-    finishStack2.setActionListener(this);
-    removedCards1.setActionListener(this);
-    removedCards2.setActionListener(this);
-    
     setPlayer(player1,player2);
     init(startStack1,player1);
     init(startStack2,player2);        
+  }
+  
+  public void setBackground(int x,int y,Color c)
+  { if(y==Const.yAll) 
+    { if(x==Const.finish1) finish1.setBackground(c);
+      else if(x==Const.finish2) finish2.setBackground(c);
+      else if(x==Const.start1) start1.setBackground(c);
+      else if(x==Const.start2) start2.setBackground(c);      
+    }
+    else
+    { buttonBoard[x][y].setBackground(c);
+    }
   }
   
   public void setActionListenerToBoard(ActionListener action)
@@ -84,7 +94,7 @@ public class GraphicBoard extends Board implements ActionListener
       { brett[a][b].setActionListener(action);
       }
     }    
-  }
+  }    
   
   private Button init(int x,int y,ActionListener al)
   { Button button=new Button();
@@ -183,12 +193,15 @@ public class GraphicBoard extends Board implements ActionListener
   { setGraphics(buttonBoard[x][y],color,str);    
   }
   
-  public void setGraphics(Button b,Color c,String str)
+  static public void setGraphics(Button b,Color c,String str)
   { b.setFont(new Font("Dialog",Font.BOLD,22));
     b.setForeground(c);
     b.setLabel(str);
   }
   
+  public Panel getStackPanel(int x,int y)
+  { return brett[x][y].getStackPanel();
+  }  
      
   public Board getBoard()
   { Board board=new Board(); 
@@ -202,17 +215,17 @@ public class GraphicBoard extends Board implements ActionListener
       }
     }  
     
-    board.startStack1=startStack1.getClone(player1);
-    board.startStack2=startStack2.getClone(player2);
-    board.finishStack1=finishStack1.getClone(player1);
-    board.finishStack2=finishStack2.getClone(player2);
-    board.removedCards1=removedCards1.getClone(player1);
-    board.removedCards2=removedCards2.getClone(player2);     
+    board.startStack1=(StartField)startStack1.getClone(player1);
+    board.startStack2=(StartField)startStack2.getClone(player2);
+    board.finishStack1=(OwnerField)finishStack1.getClone(player1);
+    board.finishStack2=(OwnerField)finishStack2.getClone(player2);
+    board.removedCards1=(OwnerField)removedCards1.getClone(player1);
+    board.removedCards2=(OwnerField)removedCards2.getClone(player2);     
     
     return board;
   }
 
-  //BE SURE IF YOU CHANGE DELIMER ; THAT getActionCommand works correctly
+  //BE SURE IF YOU CHANGE DELIMER , THAT getActionCommand works correctly
   static public String COORD_DEL=";";
   
   static public String getActionCommand(int x,int y)
@@ -261,5 +274,9 @@ class Punkt
   }
   public int getY()
   { return y;
+  }
+  
+  public String toString()
+  { return "x="+x+" | y="+y;
   }
 }

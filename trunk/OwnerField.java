@@ -61,8 +61,13 @@ public class OwnerField extends Field
   { return getSize()+"";
   }
   
-  public OwnerField getClone(Player newOwner)
-  { OwnerField tmp=new OwnerField(x,y,newOwner);
+  
+  protected Object getInstance(int x,int y,Player p)
+  { return new OwnerField(x,y,p);
+  }
+  
+  public Object getClone(Player newOwner)
+  { OwnerField tmp=(OwnerField)getInstance(x,y,newOwner);
     Card card;
     
     for(int i=0; i<cards.size(); i++)//Iterator iter=cards.iterator(); iter.hasNext();)
@@ -75,6 +80,5 @@ public class OwnerField extends Field
   
   public Color getColor() 
   { return owner.getColor();
-  }
-  
+  }  
 }

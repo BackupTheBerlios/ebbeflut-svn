@@ -22,7 +22,12 @@ public class EbbeFlut extends Frame
 {
   static private PDialog newGameDialog;
   
-  //if you init the constructor with long value, than you can "play god"|CHEAT|
+  //Cheat the game:
+  //CHEAT it with System.exit(0); after playing
+  //CHEAT it with 15 moves
+  //CHEAT it with canceling the slow PlayBack modus
+  //CHEAT it with setting Cards to board or popping cards from stack
+  //if you init the constructor with a value, than you can "play god" |CHEAT|
   static private Random rand=new Random(60);
   static private BoardButtonAL actionListener=new BoardButtonAL();
   
@@ -89,24 +94,21 @@ public class EbbeFlut extends Frame
       chronical=new Chronos();
       this.setVisible(true);      
       
-      /*|CHEAT| THE GAME TO TEST IT
-      board.push(1,3,new Card('e',3,player1));
-      board.push(0,3,new Card('c',3,player1));
-      swap=true;
-     
-      for(int i=0; i<24; i++)
-      {    board.getStartStack1().pop();
+      //|CHEAT| THE GAME TO TEST IT
+      /*swap=true;
+      
+      for(int i=0; i<14; i++)
+      {    board.getStartStack1().nextCard();
            chronical.nextMove();
+           board.getStartStack2().nextCard();
            chronical.nextMove();
       }
-      board.getStartStack1().pop();
-      chronical.nextMove();           
- 
+      
       board.push(0,3,new Card('c',5,player2));
       board.push(1,3,new Card('a',5,player2));
       board.push(1,4,new Card('b',5,player2));
+     */
       
- */     
       //--------!game loop!----------------------------------------------------
       while(true)
       { if(swap)  currentPlayer=player2;        
@@ -118,8 +120,10 @@ public class EbbeFlut extends Frame
           board.getFinishStack(currentPlayer.no).pop();
         }
         else
-        { board.setStartStackLabel("Click me "+currentPlayer.getName()
-                                +"! turn no:"+chronical.getMoveNo(),currentPlayer.no);
+        { board.getStartStack(currentPlayer.no).nextCard();
+          //overwrite the counter with a good message
+          board.setStartStackLabel("Click me twice "+currentPlayer.getName()
+                                +"! turn no:"+chronical.getMoveNo(),currentPlayer.no);          
         }
         
         currentPlayer.moves();
@@ -131,7 +135,8 @@ public class EbbeFlut extends Frame
           { //if this player or his opponnent has forgotten moves
             if(Move.getAllPossible(getOtherPlayer(currentPlayer)).size()>0
                || Move.getAllPossible(currentPlayer).size()>0)
-              chronical.setLastMoves(true);
+            { chronical.setLastMoves(true);              
+            }
             else
             {  String winner;
           
@@ -155,7 +160,7 @@ public class EbbeFlut extends Frame
       }              
       //--------!game loop!----------------------------------------------------
       
-      //|CHEAT|
+      //|CHEAT| 
       System.exit(0);     
       newGameDialog.setVisible(true);
       if(!newGameDialog.getReturnStatus().equals(PDialog.yes))
@@ -169,14 +174,55 @@ public class EbbeFlut extends Frame
   { if(player.no==Const.NO_1) return player2;
     else return player1;
   }
-   
+  
+  static int NOTHING=0,SHOW_STACK=1,REMOVE_CARD=2;
+  
   class Action implements ActionListener
   {  SettingsDialog playerSettings;
      TextFileView germanText,englishText,gpl;
+     PDialog showStack, removeCard, removeCardAnswer;
+     ActionListener boardAL;
+     int status=NOTHING;
      
      public void actionPerformed(ActionEvent ae)
      {  String cmd= ae.getActionCommand();
-       if(cmd.equals("Exit")) System.exit(0);
+        
+       if(status!=NOTHING)
+       { Punkt p=board.parseActionCommand(cmd);
+         if(status==REMOVE_CARD)
+         { Stack all=Move.getAllPossible(currentPlayer);
+           Move tmpMove;
+           boolean removingPossible=false;
+           for(int i=0; i<all.size(); i++)
+           { tmpMove=(Move)all.elementAt(i);
+             if(tmpMove.fromX==p.x && tmpMove.fromY==p.y)
+             { if(currentPlayer.no==Const.NO_1 && (tmpMove.toX==-1 || tmpMove.toY==-1)) 
+               { removingPossible=true;
+                 tmpMove.doIt();//board.getRemovedStack1().push(board.pop(p.x,p.y)));
+                 break;
+               }
+               if(currentPlayer.no==Const.NO_2 && (tmpMove.toX==5 || tmpMove.toY==5)) 
+               { removingPossible=true;
+                 tmpMove.doIt();
+                 break;
+               }
+             }
+           }
+           if(!removingPossible)
+           { if(removeCardAnswer==null) removeCardAnswer=new PDialog(getThis(),"Sorry removing is not possible!",true,"ok_cancel");
+             removeCardAnswer.setVisible(true);
+             removeCardAnswer.getReturnStatus();
+           }
+         }
+         else if(status==SHOW_STACK)
+         { PDialog showStackAnswer=new PDialog(getThis(),board.getStackPanel(p.x, p.y),true,"ok_cancel");
+           showStackAnswer.setVisible(true);
+           showStackAnswer.getReturnStatus();
+         }
+         status=NOTHING;         
+         BoardButtonAL.fireToMenuAL(null);
+       }
+       else if(cmd.equals("Exit")) System.exit(0);
        else if(cmd.equals("New"))  chronical.setGameIsFinished();
        /*else if(cmd.equals("back")) //it is useful but so you can see whats under the cards!
        { if(chronical.placed() && currentPlayer.getColor()==move.getCard().getColor())
@@ -209,7 +255,28 @@ public class EbbeFlut extends Frame
          playerSettings.setVisible(true);
          player2=playerSettings.getPlayer();
          board.setPlayer(player1,player2);
-       }        
+       }
+       else if(cmd.equals("show stack")) 
+       { if(showStack==null) 
+            showStack=new PDialog(getThis(),"Click the stack you want to see!",
+                                  true,"ok_cancel");
+         BoardButtonAL.fireToMenuAL(this);
+         showStack.setVisible(true);
+         if(showStack.getReturnStatus().equals(PDialog.ok)) 
+             status=SHOW_STACK;
+       }
+       else if(cmd.equals("remove")) 
+       { if(removeCard==null) 
+            removeCard=new PDialog(getThis(),"Click the card you want to move"
+                                   +" out of board!",true,"ok_cancel");
+         BoardButtonAL.fireToMenuAL(this);         
+         removeCard.setVisible(true);
+         if(removeCard.getReturnStatus().equals(PDialog.ok)) 
+         { //if the firstCard is Visible == !fresh or if lastMoves
+           if(!chronical.fresh() || chronical.lastMoves())      
+             status=REMOVE_CARD;         
+         }
+       }
      }     
   }
   
@@ -240,6 +307,10 @@ public class EbbeFlut extends Frame
       addItem(m, "player1", al);      
       add(m);
       
+      m = new Menu("Card");
+      addItem(m, "show stack", al);
+      addItem(m, "remove", al);      
+      add(m);
       
       m = new Menu("Info");
       addItem(m, "german", al);

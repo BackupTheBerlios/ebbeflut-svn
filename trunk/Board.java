@@ -20,8 +20,8 @@ import java.util.Vector;
  */
 public class Board
 { 
-  protected OwnerField startStack1, finishStack1, removedCards1,
-                     startStack2, finishStack2, removedCards2;
+  protected OwnerField finishStack1, removedCards1, finishStack2, removedCards2;
+  protected StartField startStack1, startStack2;
   protected CardField brett[][];  
   protected Player player1,player2;
   
@@ -46,10 +46,10 @@ public class Board
       }
     }
     
-    startStack1=new OwnerField(Const.start1,Const.yAll,player1);
+    startStack1=new StartField(Const.start1,Const.yAll,player1);
     finishStack1=new OwnerField(Const.finish1,Const.yAll,player1);
     removedCards1=new OwnerField(Const.remove1,Const.yAll,player1);      
-    startStack2=new OwnerField(Const.start2,Const.yAll,player2);
+    startStack2=new StartField(Const.start2,Const.yAll,player2);
     finishStack2=new OwnerField(Const.finish2,Const.yAll,player2);
     removedCards2=new OwnerField(Const.remove2,Const.yAll,player2);        
     
@@ -89,7 +89,7 @@ public class Board
   
   /** to initialize at the beginning the random cards of each player
    */
-  protected void init(OwnerField startStack,Player player)
+  protected void init(StartField startStack,Player player)
   {  String tmp;
      int i;
      int no=player.no;         
@@ -104,7 +104,7 @@ public class Board
     //now mix the stack randomly und make startstack
     for(int count=0; count <Const.NC; count++)   
     { i=Math.abs(EbbeFlut.nextRandomInt()%(Const.NC-count));
-      startStack.push((Card)initStack.elementAt(i));
+      startStack.pushInitial((Card)initStack.elementAt(i));
       initStack.removeElementAt(i);
     }    
   }
@@ -127,11 +127,11 @@ public class Board
     return sb.toString();
   }   
      
-  public OwnerField getStartStack1()
+  public StartField getStartStack1()
   { return startStack1;
   }
   
-  public OwnerField getStartStack2()
+  public StartField getStartStack2()
   { return startStack2;  
   }
   
@@ -156,7 +156,7 @@ public class Board
     else return finishStack2;
   }
   
-  public OwnerField getStartStack(int no)
+  public StartField getStartStack(int no)
   { if(no==Const.NO_1) return startStack1;
     else return startStack2;
   }

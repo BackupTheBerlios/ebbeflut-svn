@@ -22,6 +22,13 @@ public class AI extends Player
     private long waitMillis=500;
     private int playBackLoop=0;
     
+    /** -1 is for the first player and means that if a move goes to a coordinate
+      * with that integer than it is a "wrong move" and in calc you skip those moves
+      * to reserve calculation time
+     */
+    private int edge=-1;
+    
+    
     /** Creates a new instance of PcPlayer */
     public AI(java.awt.Color color,String name, int no) 
     { super(Const.AI_PLAYER, color, name, no);
@@ -30,8 +37,7 @@ public class AI extends Player
     /** @param fromBeginning hope the pc wont need the case fromBeginning==false :-)
      */
     public void moves()
-    { 
-      //test wether all possible moves are done from the other player
+    { //test wether all possible moves are done from the other player
       if(Move.getAllPossible(EbbeFlut.getOtherPlayer(this)).size()>0) 
       { EbbeFlut.chronical.setTheOtherPlayerIsNotReady();        
         return;
@@ -41,39 +47,24 @@ public class AI extends Player
       //interrupt the AI if the methode calc is recursing too long
       timer=new MyTimer(60000);      
       timer.start();
-       
+      
        Path path,retPath;            
-       Card startCard;       
+       //Card startCard;       
       
       board=EbbeFlut.board.getBoard();
       //before we can start => change the board from visible to an unvisible one:
       Move.setBoard(board);             
-      startCard=board.getStartStack(this.no).peek();
+      //startCard=board.getStartStack(this.no).peek();
+      
+      //if(EbbeFlut.chronical.lastMoves() || !EbbeFlut.chronical.fromBeginning()) 
         
-      if(EbbeFlut.chronical.lastMoves() || !EbbeFlut.chronical.fromBeginning()) 
-        retPath=calcWithNoPopping();
-      else if(no==Const.NO_1)
-      { retPath=calc(new Move(startCard,4,4),new Path());
-        path=calc(new Move(startCard,4,3),new Path());
-        if(path.getAssessment()>retPath.getAssessment())
-        { retPath=path;
-        }
-        path=calc(new Move(startCard,3,4),new Path());
-        if(path.getAssessment()>retPath.getAssessment())
-        { retPath=path;
-        }
+      if(no==Const.NO_1)
+      { edge=-1; //retPath=calcWithPopping();
       }
       else
-      { retPath=calc(new Move(startCard,0,0),new Path());
-        path=calc(new Move(startCard,0,1),new Path());
-        if(path.getAssessment()>retPath.getAssessment())
-        { retPath=path;
-        }
-        path=calc(new Move(startCard,1,0),new Path());
-        if(path.getAssessment()>retPath.getAssessment())
-        { retPath=path;
-        }
+      { edge=5;  //retPath=calcWithPopping();      
       }
+      retPath=calcWithNoPopping();
       if(!timer.isActive()) System.out.println("Wow! Move length is "+retPath.getSize());
       timer.deactivate();
        
@@ -114,7 +105,14 @@ public class AI extends Player
     {  int assess=0;
        
       if(doItMoveRet==Move.PROMPT) assess=-60;
-       
+      int a=board.getFinishStack(this.no).getSize();
+      int b=board.getRemovedStack(this.no).getSize();
+      int c=board.getFinishStack(this.no).getSize();
+      int d=Move.getCoveredAssessment(this);
+      int e=Move.getFreeStartAssessment(this);
+      int f=board.getStartStack1().getSize();
+      int g=board.getStartStack2().getSize();
+      
       assess+=3*(oldPathSize-1)+60*board.getFinishStack(this.no).getSize()              
               -60*board.getRemovedStack(this.no).getSize()              
               +2*Move.getCoveredAssessment(this)+Move.getFreeStartAssessment(this);
@@ -122,11 +120,19 @@ public class AI extends Player
       return assess;
     }
     
-    /*private Path calcWithPopping(Move move,Path p)
-    {  Stack all=new Stack(); 
+    /*
+    private void calcWithPopping()
+    {  Stack all=Move.getAllPossible(this);
+       Path retPath,newPath;
        
-      all.push(move);
-      return calc(p,all,0);
+       retPath=calc((Move)all.elementAt(0),new Path());
+      for(int i=1; i < all.size() && timer.isActive(); i++)
+      { newPath=calc((Move)all.elementAt(i),new Path());
+        if(newPath.getAssessment()>retPath.getAssessment())
+        { retPath=newPath;
+        }    
+      }
+      
     }*/
     
     /** calculates the moves without popping at the beginning
@@ -134,7 +140,7 @@ public class AI extends Player
      */
     public Path calcWithNoPopping()
     {  Path retPath=new Path(),newPath,oldPath=new Path();
-       int ass=getAssess(Move.NOTHING, 0);
+       int ass=getAssess(Move.NOTHING, -1000);
        Stack all=Move.getAllPossible(this);             
       
       oldPath.setAssessment(ass);
@@ -157,7 +163,7 @@ public class AI extends Player
       Stack all=Move.getAllPossible(this);   
       oldPath.push(move);
       
-      if(all.empty()) 
+      if(all.empty() || move.toX==edge || move.toY==edge) 
       { oldPath.setAssessment( getAssess(ret,oldPath.getSize()) ); 
         move.takeBack();
         return oldPath;

@@ -21,10 +21,10 @@ import java.awt.*;
  */
 public class MyDialog extends Dialog
 {
-    static String ok="Ok";
-    static String cancel="Cancel";
-    static String yes="Yes";
-    static String no="No";
+    static public String ok="Ok";
+    static public String cancel="Cancel";
+    static public String yes="Yes";
+    static public String no="No";
     
     protected String returnStatus;
     
@@ -36,9 +36,9 @@ public class MyDialog extends Dialog
     protected void doClose(String retStatus)
     {  returnStatus = retStatus;
        setVisible(false);
-      // System.out.println(returnStatus);
-       dispose();
-    }    
+      //this is a lot quicker, but also secure???
+       //dispose();
+    }       
     
     public String getReturnStatus()
     { return returnStatus;
