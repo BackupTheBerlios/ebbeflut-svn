@@ -12,6 +12,11 @@
  * Created on 7. Oktober 2004, 19:20
  */
 
+package source.gui;
+
+import source.main.*;
+import source.util.Const;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -28,15 +33,13 @@ public class SettingsDialog extends MyDialog
     Choice kindWindow;
     Button kindWindowHead;      
     Choice colorWindow;
-    Button colorWindowHead;            
-    boolean writeSettings;
+    Button colorWindowHead;
     
     /** Creates a new instance of SettingsDialog */
-    public SettingsDialog(Frame owner,Player oP,boolean writeSettings)
+    public SettingsDialog(Frame owner,Player oP)
     { super(owner,true);
-      this.writeSettings=writeSettings;
       oldPlayer=oP;
-       Button saveB=new Button("save"),cancelB=new Button("cancel");
+       Button saveB=new Button(save),cancelB=new Button(cancel);
        
       saveB.addActionListener(new ButtonAL());
       cancelB.addActionListener(new ButtonAL());
@@ -52,9 +55,9 @@ public class SettingsDialog extends MyDialog
       colorWindow=new Choice();
       colorWindowHead=new Button("Which color?");            
       
-      kindWindow.add(Const.AI_PLAYER);
+      kindWindow.add(Player.AI);
       //kindWindow.add(Const.PC_PLAYER);
-      kindWindow.add(Const.HUMAN_PLAYER);
+      kindWindow.add(Player.HUMAN);
       kindWindow.select(oldPlayer.getType());
       
       colorWindow.add("white");
@@ -75,7 +78,7 @@ public class SettingsDialog extends MyDialog
       });
       
       pack();
-    }
+    }        
     
     public Player getPlayer()
     { if(player==null) return oldPlayer;
@@ -86,27 +89,26 @@ public class SettingsDialog extends MyDialog
     {   /** Invoked when an action occurs.
          */
         public void actionPerformed(ActionEvent e) 
-        { if(e.getActionCommand().equals("cancel")) doClose(cancel);
-          
-           Color color;
-           String name=nameWindow.getText(),colString;
-           int no=oldPlayer.no;
+        { if(e.getActionCommand().equals(cancel)) doClose(cancel);
+          if(e.getActionCommand().equals(save)) 
+          { Color color;
+            String name=nameWindow.getText(),colString;
+            int no=oldPlayer.no;
            
-          if(name.length()==0) name=oldPlayer.getName();
-          
-          
-          String kind=kindWindow.getSelectedItem();
-          color=stringToColor(colorWindow.getSelectedItem());
-          //if(color==null) color=oldPlayer.getColor();
-          
-          player=Player.cloneWithNewSettings(oldPlayer.no, kind, name, color);
-          if(writeSettings) writeSettings(player);
-          doClose(cancel);
-        }
-        
+            if(name.length()==0) name=oldPlayer.getName();
+             String kind=kindWindow.getSelectedItem();
+            color=stringToColor(colorWindow.getSelectedItem());
+            player=Player.cloneWithNewSettings(oldPlayer.no, kind, name, color);
+            doClose(save);
+          }
+        }        
     }    
   
-  public void writeSettings(Player player)
+  public void writeSettings()
+  { writeSettings(player);
+  }
+  
+  private void writeSettings(Player player)
   { File file;
     
     if(player.no==Const.NO_1) file=new File(Const.player1File);
@@ -163,7 +165,7 @@ public class SettingsDialog extends MyDialog
     return player;
   }
   
-  static private Color stringToColor(String colString)
+  static public Color stringToColor(String colString)
   { Color color;
     
     if(colString.equals("white")) color=Color.white;
@@ -175,7 +177,7 @@ public class SettingsDialog extends MyDialog
     return color;
   }
   
-  private String colorToString(Color color)
+  static public String colorToString(Color color)
   { String str;
     
     if(Color.white.equals(color)) return "white";

@@ -12,6 +12,9 @@
  * Created on 8. Oktober 2004, 14:30
  */
 
+package source.main;
+import source.util.Stack;
+
 import java.awt.event.ActionListener;
 import java.awt.Color;
 
@@ -22,11 +25,19 @@ import java.awt.Color;
 abstract public class Field
 { protected int x,y;
   protected Stack cards=new Stack(25,5);
-  ActionListener action;
+  protected ActionListener action;
   
   public Field(int a, int b)
   { x=a;
     y=b;    
+  }
+  
+  public int x()
+  { return x;
+  }
+  
+  public int y()
+  { return y;
   }
   
   public void push(Card karte)

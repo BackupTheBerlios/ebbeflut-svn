@@ -1,3 +1,5 @@
+package source.util;
+
 /*
  * @(#)Stack.java	1.25 01/12/03
  *

@@ -12,6 +12,8 @@
  * Created on 1. Januar 2004, 16:27
  */
 
+package source.gui;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -23,15 +25,19 @@ public class PDialog extends MyDialog
 {
     
     private Panel  buttonPanel;
-    private TextField text;
+    private Label text;
     private Button okButton;
     private Button cancelButton;
     
+    /** to emulate no and yes or only okay
+     */
     private String okString;
     private String cancelString;    
     
     PActionListener actionListener=new PActionListener();
-      
+    
+    /** if in the Dialog is a choice available
+     */
     private boolean choiceDialog=false;
     private String retChoiceString;
     
@@ -46,8 +52,7 @@ public class PDialog extends MyDialog
     {   super(parent, modal); 
         // this here doesnt work ?? :  setTitle(super.getTitle());
         buttonPanel = new Panel();
-        text=new TextField(title);
-        text.setEditable(false);      
+        text=new Label(title);
         
         okButton = new Button();
         cancelButton = new Button();
@@ -82,7 +87,7 @@ public class PDialog extends MyDialog
           }
       });           
      
-      pack();            
+      pack();
     }    
         
     /** Creates new form Dialog 

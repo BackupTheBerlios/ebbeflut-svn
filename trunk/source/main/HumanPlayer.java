@@ -12,6 +12,8 @@
  * Created on 28. September 2004, 17:19
  */
 
+package source.main;
+
 import java.awt.Color;
 
 /** for humanplayer 
@@ -22,17 +24,17 @@ import java.awt.Color;
 public class HumanPlayer extends Player
 {
     
-    /** Creates a new instance of HumanPlayer */
-    public HumanPlayer(Color color, String namePlayer,int no)
-    { super(Const.HUMAN_PLAYER,color, namePlayer, no,true);
+    public HumanPlayer(Color color, String namePlayer,int no,boolean directAccess)
+    { super(HUMAN,color, namePlayer, no, directAccess);
     }    
     
-    public Path moves()
-    {  EbbeFlut.chronical.newTurn(EbbeFlut.chronical.fromBeginning());
-     
-     while(!EbbeFlut.chronical.isTurnFinished() && (!EbbeFlut.chronical.isGameFinished() || EbbeFlut.chronical.lastMoves()) );          
-
-       return path;
+    public HumanPlayer(Color color, String namePlayer,int no)
+    { super(HUMAN,color, namePlayer, no, true);
+    }
+    
+    public Path moves(Path opponentsPath)
+    { while(!EbbeFlut.chronical.isTurnFinished() && (!EbbeFlut.chronical.isGameFinished() || EbbeFlut.chronical.lastMoves()) );
+      return path;
     }
     
 }

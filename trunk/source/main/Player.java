@@ -11,59 +11,80 @@
  *
  */
 
+package source.main;
+import source.util.Const;
 import java.awt.Color;
 
 /** if you want to make a new player, may be an computerthinking one than use this class
  */
-abstract class Player
+public abstract class Player
 { private String name;  
   private Color color;
   private String type;
   private long waitMillis=500;
-  private int playBackLoop;
-  private boolean directAccess;//if the player is local or has direct acces to the "real" board
+  private int playBack;
+  protected boolean directAccess;//if the player is local or has direct acces to the "real" board
 
-  public Path path=new Path();
+  protected Path path=new Path();
   public int no;   
+  static public String AI="computer",HUMAN="human"
+                       ,INTERNET="internetPlayer";
   
+  
+  /** @param type "computer","human","internetPlayer"
+   *  @param namePlayer the human readable name of each player
+   *  @param no Const.NO_1 or Const.NO_2
+   *  @param directAccessToTheBoard if this player sends paths(=false) or moves (=true)
+   */
   public Player(String type, Color colour, String namePlayer,int no, boolean directAccessToTheBoard)
   { this.type=type; 
      directAccess=directAccessToTheBoard;
      this.color=colour;
      name=namePlayer;
      this.no=no;    
-     if(no==Const.NO_1) playBackLoop=Const.PLAYBACK1;
-     else playBackLoop=Const.PLAYBACK2;
+     if(no==Const.NO_1) playBack=Const.PLAYBACK1;
+     else playBack=Const.PLAYBACK2;
   }  
   
-  public void nextTurn()  
-  {System.out.println("\n\n"+getName());    
-    path.clear();//this is only important for the directAccess Player like HumanPlayer
-    path=moves();
-    showMoves(path);    
-    EbbeFlut.board.setStartStackLabel("Ready!",no);
+  public Path nextTurn(Path oppenentsPath)  
+  { System.out.println("\n\n"+getName());
+    path.clear();//this is very (and only) important for the directAccess Player like HumanPlayer
+    
+    path=moves(oppenentsPath);
+    show_set_Path(path);
+    
+    return path;
   }
   
-  protected void showMoves(Path path)
-  { for(int i=0; i<path.getSize(); i++)
-     {  System.out.println(path.getElement(i).toString());
-         if(path.getElement(i)==Const.doYourWorkMove) return;
-     }
-  
-     if(directAccess) 
-     { if(playBackLoop==0) return;//skip play back, this is not possible for pc, because pc hasn't move directly
-        for(int i=path.getSize()-1; i>=0; i--)
-        { path.getElement(i).takeBack();
-        }
-     } 
+  private void show_set_Path(Path path)
+  {     
+    for(int i=0; i<path.getSize(); i++)
+    {  System.out.println(path.getElement(i).toString());
+    }
+    if(path.getSize()==1 && path.getElement(0)==Const.doYourWorkMove)
+      return;
+    //pc hasn't move directly == no direct Access
+    if(directAccess) 
+    { if(playBack==0) return;//skip play back
+       for(int i=path.getSize()-1; i>=0; i--)
+       { path.getElement(i).takeBack();
+       }
+    } 
 
     for(int i=0; i<path.getSize(); i++)
-     { loop(playBackLoop,i);
+     { loop(playBack,i);
         path.getElement(i).doIt();
-        if(playBackLoop>0) myWait(waitMillis);        
+        if(playBack>0) myWait(waitMillis);        
       }        
   }
 
+  public boolean hasDirectAccess()
+  { return directAccess;
+  }
+  
+  public int playBackLoop()
+  { return playBack;
+  }
    private void myWait(long millis)
    { try
      { Thread.sleep(millis);
@@ -82,7 +103,7 @@ abstract class Player
       }
     }
    
-  abstract public Path moves();
+  abstract public Path moves(Path opponentsPath);
   
   public Color getColor()
   { return color;
@@ -113,17 +134,27 @@ abstract class Player
     return no==card.getOwner().no;
   }
   
+  public String toString()
+  { return name+" "+type+" "+source.gui.SettingsDialog.colorToString(color)+" "+no;
+  }
+  
   public Player getClone()
   { return cloneWithNewSettings(no,type,name,color);
+  }
+  
+  public void pushMove(Move move)
+  { path.push(move);
   }
   
   static public Player cloneWithNewSettings(int newNo, String newKind, String newName,Color newColor)
   { Player player;
     
-    if(newKind.equals(Const.HUMAN_PLAYER)) 
+    if(newKind.equals(HUMAN)) 
       player=new HumanPlayer(newColor,newName,newNo);
-    else if(newKind.equals(Const.AI_PLAYER)) 
+    else if(newKind.equals(AI)) 
       player=new AI(newColor,newName,newNo);
+    else if(newKind.equals(INTERNET)) 
+      player=new source.inet.InternetPlayer(newColor,newName,newNo);
     else return null;       
     
     return player;

@@ -7,6 +7,9 @@
  *                                                                         *
  ***************************************************************************
  */
+package source.main;
+
+import source.util.Const;
 
 /** represent a card; 
  *  @author  peter karich
@@ -59,6 +62,11 @@ public class Card implements Cloneable
      String tmp=""+c+i;
     if(owner.no==Const.NO_1) tmp=tmp.toUpperCase();
     return tmp;
+  }
+  
+  static public Card stringToCard(String cardAsString, Player player)
+  { return new Card(cardAsString.charAt(0), 
+                    Integer.parseInt(cardAsString.charAt(1)+""), player);    
   }
   
   /** it is not an identity equal, it is "so equal" that this card could be moved

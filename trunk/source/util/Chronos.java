@@ -1,3 +1,5 @@
+package source.util;
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,7 +27,7 @@ public class Chronos
 	
     /** a whole turn is splitted into several steps
      */
-    static int FRESH=0, SHOWED=1, STARTCARD_PLACED=2, status;
+    static public int FRESH=0, SHOWED=1, STARTCARD_PLACED=2, status;
     private boolean sthWasClicked;
     
     public Chronos() 

@@ -12,6 +12,8 @@
  * Created on 7. Oktober 2004, 21:18
  */
 
+package source.gui;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;

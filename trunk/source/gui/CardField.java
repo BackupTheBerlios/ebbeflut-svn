@@ -12,6 +12,11 @@
  * Created on 8. Oktober 2004, 14:31
  */
 
+package source.gui;
+
+import source.main.*;
+import source.util.Const;
+
 import java.awt.event.*;
 import java.awt.*;
 
@@ -101,15 +106,19 @@ public class CardField extends Field
     Card tmpCard;
     Button button;
     
-    for(int i=cards.size()-1; i>= (cards.size()-MAX) && i>=0; i--)
-    { tmpCard=(Card)cards.elementAt(i);
-      button=new Button();
-      GraphicBoard.setGraphics(button,tmpCard.getColor(),"?");
-      if(!hide) 
-      { button.setLabel(tmpCard.toString());        
-        hide=true;
+    if(cards.empty()) cardPanel.add(new Label("empty"));
+    else
+    { for(int i=cards.size()-1; i>= (cards.size()-MAX) && i>=0; i--)
+      { tmpCard=(Card)cards.elementAt(i);
+        button=new Button();
+        GraphicBoard.setGraphics(button,tmpCard.getColor(),"?");
+         //show only the first card
+        if(!hide) 
+        { button.setLabel(tmpCard.toString());        
+          hide=true;
+        }
+        cardPanel.add(button);
       }
-      cardPanel.add(button);      
     }
     return cardPanel;
   }

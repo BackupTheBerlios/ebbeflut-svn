@@ -1,3 +1,6 @@
+package source.gui;
+import source.main.*;
+
 /*
  * StartField.java
  *
@@ -16,6 +19,12 @@ public class StartField extends OwnerField
    */
   public StartField(int a, int b, Player player)
   { super(a,b,player);
+  }
+  
+  public void setOwner(Player pl)
+  { super.setOwner(pl);
+    if(firstCard==null) return;
+    firstCard.setOwner(pl);
   }
   
   /** after a push (push TO startstack is only possible from computer players) 

@@ -12,6 +12,11 @@
  * Created on 8. Oktober 2004, 14:30
  */
 
+package source.gui;
+
+import source.main.*;
+import source.util.Const;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 

@@ -1,3 +1,7 @@
+package source.main;
+
+import source.util.*;
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -487,6 +491,28 @@ public class Move implements Cloneable
     public String toString()
     { if(this==Const.doYourWorkMove) return "do Your Work!";
         return card.toString()+" from "+fromX+","+fromY+" to "+toX+","+toY;
+    }
+    
+    static public Move stringToMove(String moveAsString, Player player)
+    { if(moveAsString.equals("do Your Work!")) return Const.doYourWorkMove;
+      java.util.StringTokenizer st=new java.util.StringTokenizer(moveAsString);
+      String card; int fromX,fromY,toX,toY;
+      
+      if(st.hasMoreElements()) card=st.nextToken();
+      else return null;
+      //give delimers: f and r and o m , " " 
+      if(st.hasMoreElements()) fromX=Integer.parseInt(st.nextToken("from, "));
+      else return null;
+      if(st.hasMoreElements()) fromY=Integer.parseInt(st.nextToken(", "));
+      else return null;
+      if(st.hasMoreElements()) toX=Integer.parseInt(st.nextToken("to, "));
+      else return null;
+      if(st.hasMoreElements()) toY=Integer.parseInt(st.nextToken(",\n"));
+      else return null;
+      
+      Card c=Card.stringToCard(card, player);
+      c.setPosition(fromX, fromY);
+      return new Move(c,  toX, toY);
     }
     
     public Object clone()

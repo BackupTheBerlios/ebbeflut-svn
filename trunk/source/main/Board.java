@@ -8,6 +8,11 @@
  ***************************************************************************
  */
 
+package source.main;
+
+import source.gui.*;
+import source.util.Const;
+
 import java.util.Vector;
 
 /**
@@ -34,7 +39,7 @@ public class Board
   
   /**  After "new Board()" you have to make sure, that you set Move.setBoard correctly
     */
-  protected Board()
+  public Board()
   { brett=new CardField[5][];
     for(int count=0; count<5; count++)
     { brett[count]=new CardField[5];
@@ -73,6 +78,25 @@ public class Board
     startStack2.setOwner(o2);
     removedCards2.setOwner(o2);
   } 
+  
+  public void setStartFields(StartField pl1, StartField pl2)
+  { startStack1=pl1;
+    startStack2=pl2;    
+  }
+  
+  public void setFinishFields(OwnerField pl1, OwnerField pl2)
+  { finishStack1=pl1;
+    finishStack2=pl2;    
+  }
+  
+  public void setRemovedFields(OwnerField pl1, OwnerField pl2)
+  { removedCards1=pl1;
+    removedCards2=pl2;    
+  }
+  
+  public void setCardField(int x,int y,CardField cf)
+  { brett[x][y]=cf;
+  }
    
   public void push(int x,int y,Card card)
   { card.setPosition(x,y);   
@@ -97,9 +121,7 @@ public class Board
      
     //make a real field with card objects from startCards
     for(int count=0; count <Const.NC; count++)
-    { tmp=startCards[count];
-      i=Integer.parseInt(tmp.charAt(1)+"");
-      initStack.addElement(new Card(tmp.charAt(0),i,player));
+    { initStack.addElement(Card.stringToCard(startCards[count], player));      
     }
     //now mix the stack randomly und make startstack
     for(int count=0; count <Const.NC; count++)   

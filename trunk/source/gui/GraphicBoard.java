@@ -13,6 +13,10 @@
  */
 
 
+package source.gui;
+import source.main.*;
+import source.util.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -229,16 +233,16 @@ public class GraphicBoard extends Board implements ActionListener
     
     for(int a=0; a<5; a++)
     { for(int b=0; b<5; b++)
-      { board.brett[a][b]=brett[a][b].getClone();
+      { board.setCardField(a,b,brett[a][b].getClone());
       }
     }  
     
-    board.startStack1=(StartField)startStack1.getClone(player1);
-    board.startStack2=(StartField)startStack2.getClone(player2);
-    board.finishStack1=(OwnerField)finishStack1.getClone(player1);
-    board.finishStack2=(OwnerField)finishStack2.getClone(player2);
-    board.removedCards1=(OwnerField)removedCards1.getClone(player1);
-    board.removedCards2=(OwnerField)removedCards2.getClone(player2);     
+    board.setStartFields((StartField)startStack1.getClone(player1),
+                         (StartField)startStack2.getClone(player2));
+    board.setFinishFields((OwnerField)finishStack1.getClone(player1),
+                          (OwnerField)finishStack2.getClone(player2));
+    board.setRemovedFields((OwnerField)removedCards1.getClone(player1),
+                           (OwnerField)removedCards2.getClone(player2));
     
     return board;
   }
@@ -266,7 +270,7 @@ public class GraphicBoard extends Board implements ActionListener
   public void actionPerformed(ActionEvent ae) 
   { Field field=(Field)ae.getSource();
     String cl=ae.getActionCommand();
-    int x=field.x, y=field.y;
+    int x=field.x(), y=field.y();
       
     if(field instanceof OwnerField) //if(y==Const.yAll)
     { if(x==Const.start1 )      setStartStackLabel(cl,Const.NO_1);
@@ -279,22 +283,4 @@ public class GraphicBoard extends Board implements ActionListener
       labelSet(cl,x,y,field.getColor());
     }
   } 
-}
-
-class Punkt
-{ public int x,y;
-  public Punkt(int x,int y)
-  { this.x=x;
-    this.y=y;
-  }
-  public int getX()
-  { return x;
-  }
-  public int getY()
-  { return y;
-  }
-  
-  public String toString()
-  { return "x="+x+" | y="+y;
-  }
 }

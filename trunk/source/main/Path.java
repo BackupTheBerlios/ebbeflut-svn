@@ -1,3 +1,6 @@
+package source.main;
+import source.util.Stack;
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,7 +17,7 @@
 
  /** one turn may consist of many moves, so save them in path
     */
-class Path
+public class Path
 {  private int assessment; //bewertung? |GERMAN|
      private Stack nextMoves=new Stack(5,5);
    
@@ -61,11 +64,34 @@ class Path
      { nextMoves.removeAllElements();
      }  
  
+     
+     static private char defaultDelim=';';
+     
      public String toString()
+     { return toString(defaultDelim);
+     } 
+     
+     public String toString(char delim)
      { StringBuffer sb=new StringBuffer();
+       
         for(int i=0; i<nextMoves.size(); i++)
-        { sb.append(((Move)nextMoves.elementAt(i)).toString());
+        { sb.append(((Move)nextMoves.elementAt(i)).toString()+delim);
         }
-        return sb.toString();
+       return sb.toString();
+     }
+     
+     static public Path stringToPath(String str,char delim,Player player)
+     {  java.util.StringTokenizer st=new java.util.StringTokenizer(str, delim+"");
+        Path p=new Path();
+        
+       while(st.hasMoreTokens())
+       { p.push(Move.stringToMove(st.nextToken(), player));
+       }
+        
+       return p;
+     }
+     
+     static public Path stringToPath(String str,Player player)
+     { return stringToPath(str,defaultDelim,player);
      }
 }
