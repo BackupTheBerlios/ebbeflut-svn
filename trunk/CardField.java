@@ -29,7 +29,7 @@ public class CardField extends Field
     
   public void push(Card karte)
   { super.push(karte);
-    if(action==null) return; //faster calculation!!! if no 
+    if(action==null) return; //this line is for faster calculation!!!  
     set1stCard(karte);
   }
   
@@ -68,7 +68,7 @@ public class CardField extends Field
   public void setOwner(Player o1,Player o2)
   { Card tmp;
     
-    //refresh owner from all cards
+    //refresh owner (color) from all cards
     for(int i=0; i<cards.size(); i++)
     { tmp=(Card)cards.elementAt(i);
       if(tmp.getOwner().no==Const.NO_1) tmp.setOwner(o1);

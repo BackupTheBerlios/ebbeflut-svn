@@ -48,7 +48,7 @@ public class Chronos
     public void setStatus(int s)
     { status=s;
       if(getStatus().equals("undefined"))      
-      { throw new Error("sth gowes wrong in chronos");      
+      { throw new Error("sth gowes wrong in class chronos");      
       }    
     }
     
@@ -117,13 +117,11 @@ public class Chronos
     }
     
     public void nextMove()    
-    { moveNo++;      
-      if(moveNo>=Const.NC*2) setGameIsFinished();
+    { moveNo++;     
     }
     
     public void prevMove()    
     { moveNo--;           
-      if(moveNo<Const.NC*2) finishedGame=false;
     }          
     
     public int getMoveNo()

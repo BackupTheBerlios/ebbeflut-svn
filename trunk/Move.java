@@ -67,7 +67,10 @@ public class Move implements Cloneable
      * test wether card is on its supposed place?   => ca 4% slower
      */
     public boolean isPossible()
-    { if(!takeBackCalled) return false;
+    { if(!takeBackCalled) 
+       { if(Const.DEBUG) System.out.println("WARNING: Move.isPossible() was not called, cause you takeBack this move");
+          return false;
+       }
        
        boolean possible=false;
        Card tmp;
@@ -142,7 +145,11 @@ public class Move implements Cloneable
       * but its your work to prevent clashs
      **/
     public int doIt()
-    { if(!takeBackCalled) return TAKE_BACK_WASNT_CALLED;
+    { if(!takeBackCalled) 
+      { if(Const.DEBUG) System.out.println("WARNING: Move.doIt() was not called, cause you do this move without taken it back");
+         return TAKE_BACK_WASNT_CALLED;
+      }
+
       takeBackCalled=false;
       
       Card tmp;      
@@ -258,14 +265,12 @@ public class Move implements Cloneable
        //is this move vertical?
        boolean verticalMove=doneMove.fromY == doneMove.toY; 
        
-      //re use newMoves
-      newMoves.clear();
       //System.out.println("sth goes wrong in Move.getNewPossible");
       //remove all impossible moves now, do Move.doIt before!!!
       for(int i=0; i < old.size(); i++)
       { moveTmp=(Move)old.elementAt(i);
         if(moveTmp.isPossible()) 
-            newMoves.add(moveTmp);        
+            newMoves.push(moveTmp);        
         //System.out.println(i+" "+moveTmp.toString());
       }
       
@@ -474,8 +479,14 @@ public class Move implements Cloneable
       return own;
     }
     
+    public boolean equals(Object obj)
+    { Move tmp=(Move)obj;
+       return tmp.card.equals(this.card) && tmp.toX == this.toX && tmp.toY==this.toY;
+    }
+
     public String toString()
-    { return card.toString()+" from "+fromX+","+fromY+" to "+toX+","+toY;
+    { if(this==Const.doYourWorkMove) return "do Your Work!";
+        return card.toString()+" from "+fromX+","+fromY+" to "+toX+","+toY;
     }
     
     public Object clone()

@@ -40,6 +40,7 @@ public class GraphicBoard extends Board implements ActionListener
     if(!buttonInit) 
     { buttonInit=true;
       buttonBoard=new Button[5][];
+      
       for(int i=0; i<5; i++)
       { buttonBoard[i]=new Button[5];
       }      
@@ -52,12 +53,8 @@ public class GraphicBoard extends Board implements ActionListener
       finish2=init(Const.finish2,Const.yAll,al);
       start1=init(Const.start1,Const.yAll,al);
       start2=init(Const.start2,Const.yAll,al);      
-      buttonBoard[0][0].setBackground(Const.starterFieldsColor1);
-      buttonBoard[0][1].setBackground(Const.starterFieldsColor1);
-      buttonBoard[1][0].setBackground(Const.starterFieldsColor1);    
-      buttonBoard[4][4].setBackground(Const.starterFieldsColor2);
-      buttonBoard[4][3].setBackground(Const.starterFieldsColor2);
-      buttonBoard[3][4].setBackground(Const.starterFieldsColor2);
+      setBackground(Const.NORMAL_BACKGROUND, Const.starterFieldsColor1, 
+                    Const.starterFieldsColor2);
     }
     else
     { for(int i=0; i<5; i++)
@@ -74,6 +71,27 @@ public class GraphicBoard extends Board implements ActionListener
     setPlayer(player1,player2);
     init(startStack1,player1);
     init(startStack2,player2);        
+  }
+  
+  /** color1- main color; color2-starterfield1; color3-starterfield2
+   */
+  public void setBackground(Color c1,Color c2,Color c3)
+  { for(int a=0; a<5; a++)
+    { for(int b=0; b<5; b++)
+      { setBackground(a,b,c1);      
+      }
+    }
+    start1.setBackground(c1);
+    start2.setBackground(c1);
+    finish1.setBackground(c1);
+    finish2.setBackground(c1);
+    
+    buttonBoard[0][0].setBackground(c2);
+    buttonBoard[0][1].setBackground(c2);
+    buttonBoard[1][0].setBackground(c2);    
+    buttonBoard[4][4].setBackground(c3);
+    buttonBoard[4][3].setBackground(c3);
+    buttonBoard[3][4].setBackground(c3);    
   }
   
   public void setBackground(int x,int y,Color c)

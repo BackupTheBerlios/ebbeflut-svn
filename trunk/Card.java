@@ -24,7 +24,7 @@ public class Card implements Cloneable
   public Card(char z, int n, Player player)
   { owner=player;
     if(n<1 || n>5)
-       throw new IllegalArgumentException("zeichen oder zahl nicht im bereich a-e bzw. 1-5");     
+       throw new IllegalArgumentException("zeichen oder zahl nicht im bereich a-e bzw. 1-5 throw it in new Card()");     
     c=z;
     i=n;
   }

@@ -19,17 +19,70 @@ abstract class Player
 { private String name;  
   private Color color;
   private String type;
-  
+  private long waitMillis=500;
+  private int playBackLoop;
+  private boolean directAccess;//if the player is local or has direct acces to the "real" board
+
+  public Path path=new Path();
   public int no;   
   
-  public Player(String type, Color colour, String namePlayer,int no)
+  public Player(String type, Color colour, String namePlayer,int no, boolean directAccessToTheBoard)
   { this.type=type; 
-    this.color=colour;
-    name=namePlayer;
-    this.no=no;    
+     directAccess=directAccessToTheBoard;
+     this.color=colour;
+     name=namePlayer;
+     this.no=no;    
+     if(no==Const.NO_1) playBackLoop=Const.PLAYBACK1;
+     else playBackLoop=Const.PLAYBACK2;
   }  
   
-  abstract public void moves();
+  public void nextTurn()  
+  {System.out.println("\n\n"+getName());    
+    path.clear();//this is only important for the directAccess Player like HumanPlayer
+    path=moves();
+    showMoves(path);    
+    EbbeFlut.board.setStartStackLabel("Ready!",no);
+  }
+  
+  protected void showMoves(Path path)
+  { for(int i=0; i<path.getSize(); i++)
+     {  System.out.println(path.getElement(i).toString());
+         if(path.getElement(i)==Const.doYourWorkMove) return;
+     }
+  
+     if(directAccess) 
+     { if(playBackLoop==0) return;//skip play back, this is not possible for pc, because pc hasn't move directly
+        for(int i=path.getSize()-1; i>=0; i--)
+        { path.getElement(i).takeBack();
+        }
+     } 
+
+    for(int i=0; i<path.getSize(); i++)
+     { loop(playBackLoop,i);
+        path.getElement(i).doIt();
+        if(playBackLoop>0) myWait(waitMillis);        
+      }        
+  }
+
+   private void myWait(long millis)
+   { try
+     { Thread.sleep(millis);
+     }
+     catch(InterruptedException ie)
+     { System.out.println("sth goes wrong with the sleep operation");
+     }
+   }
+    
+    private void loop(int playBack,int i)
+    { for(int counter=0; counter<playBack; counter++)
+      { path.getElement(i).doIt();
+        myWait(waitMillis);
+        path.getElement(i).takeBack();        
+        myWait(waitMillis);                
+      }
+    }
+   
+  abstract public Path moves();
   
   public Color getColor()
   { return color;
@@ -69,8 +122,6 @@ abstract class Player
     
     if(newKind.equals(Const.HUMAN_PLAYER)) 
       player=new HumanPlayer(newColor,newName,newNo);
-    else if(newKind.equals(Const.PC_PLAYER)) 
-      player=new PcPlayer(newColor,newName,newNo);
     else if(newKind.equals(Const.AI_PLAYER)) 
       player=new AI(newColor,newName,newNo);
     else return null;       

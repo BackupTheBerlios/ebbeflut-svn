@@ -53,7 +53,7 @@ public class SettingsDialog extends MyDialog
       colorWindowHead=new Button("Which color?");            
       
       kindWindow.add(Const.AI_PLAYER);
-      kindWindow.add(Const.PC_PLAYER);
+      //kindWindow.add(Const.PC_PLAYER);
       kindWindow.add(Const.HUMAN_PLAYER);
       kindWindow.select(oldPlayer.getType());
       
@@ -131,7 +131,8 @@ public class SettingsDialog extends MyDialog
    *  @oldPlayer where the user give us no information we use oldPlayer instead
    */
   static public Player readSettings(int no)
-  { String fileName,name,type,color;
+  { String fileName,name,type;
+    Color color;
     Player player=null;
     if(no==Const.NO_1) fileName=Const.player1File;
     else fileName=Const.player2File;
@@ -143,8 +144,16 @@ public class SettingsDialog extends MyDialog
     {  BufferedReader br=new BufferedReader(new FileReader(file));
        name=br.readLine();if(name==null) return null;
        type=br.readLine();if(type==null) return null;
-       color=br.readLine();if(color==null) return null;
-       player=Player.cloneWithNewSettings(no, type, name, stringToColor(color));
+       if(Const.OS_IS_ZAURUS) 
+       { br.readLine();
+         if(no==Const.NO_1) color=Const.ZAURUS_COLOR1;
+         else color=Const.ZAURUS_COLOR2;
+       }
+       else 
+       { color=stringToColor(br.readLine());
+         if(color==null) return null;
+       } 
+       player=Player.cloneWithNewSettings(no, type, name, color);
        br.close();
     }
     catch(Exception exc)

@@ -110,20 +110,20 @@ public class Board
   }
   
   public String toString()
-  { StringBuffer sb=new StringBuffer();
+  { StringBuffer sb=new StringBuffer("\n\n");
     Card tmp;
     
     for(int m=0; m<5;m++)
     { for(int n=0; n<5; n++)
-      { tmp=peek(m,n);
-        if(tmp==null) 
-        { sb.append("   ");
-          continue;
-        }
-        sb.append(tmp.toString()+" ");
+      { sb.append(m+","+n+":"+brett[m][n].getContentsAsString()+"\n");
       }
-      sb.append("\n");
     }
+    sb.append("\n\nstartStack1  :"+startStack1.getContentsAsString());
+    sb.append("\nstartStack2  :"+startStack2.getContentsAsString());
+    sb.append("\nfinishStack1 :"+finishStack1.getContentsAsString());
+    sb.append("\nfinishStack2 :"+finishStack2.getContentsAsString());
+    sb.append("\nremovedCards1:"+removedCards1.getContentsAsString());
+    sb.append("\nremovedCards2:"+removedCards2.getContentsAsString());
     return sb.toString();
   }   
      

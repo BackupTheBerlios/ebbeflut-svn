@@ -106,7 +106,7 @@ public class Stack extends java.util.Vector implements Cloneable
     /** clear all elements, without removing the memory
      */
     public void clear()
-    { super.clear();
+    { super.removeAllElements();    
     }
     
     /**

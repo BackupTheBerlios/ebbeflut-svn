@@ -1,41 +1,5 @@
-
-folgende Verbesserungen sind noetig/moeglich:
--Zugverkuerzung fuer Ai??
--logfile fuer die Partie schreiben-> also Zug von bis ..., -> abrufbar im Program -jederzeit
--einstellungen playBackloop f�r jeden spieler speichern
--moegliche systemverschiedene (zaurus) einstellungen von Datei laden koennen
- damit nicht extra ClassFile notwendig (z.B.Groesse des Fenster)
--thinking vom computer anzeigen
--spielregel realisieren, das vor dem platzieren auch gesetzt werden kann
--komplette Path aller Moves nach jeden Zug speichern bzw. fuer netzfaigkeit implementieren
- damit man also nur den Path schicken muss, und dieser dann nur noch auf dem 
- fernen client ausgefuehrt werden muss.
--ebbe als server, bzw netzfaehig machen, eventuell chat fenster?
--loesche nicht mehr verwendete variablen, imports etc.
--Board nicht nach jedem Zug fuer Ai clonen, besser nur die Zuege vom Gegner
- darauf ausfuehren lassen => clonen dauert aber nur wenige milli sekunden
- daher wuerde der Aufwand ganz schoen gross sein
--andere Bugs??
-
-
-schon ausprobierte (nutzlose) verbesserungen:
----------------------------------------------
-in Move getAllPossible ist nur nach dem ersten Zug noetig -> dann kann man 
- schnellere Methode schreiben -> Move.getNewPossible
- dies ist jedoch nicht nachweislich schneller!
-
-in Field
-  try catch(EmptyStackException statt if(stack.empty 
-  dies ist aber langsamer da das Field meist leer ist
-
-in Move.getAllPossible
-  move.toX=m; move.toY=n-1; is the same as: 
-  move=new Move(tmp, player, m,  n-1);          //but you have to "new Move" it !!
-in AI
-  for(int i=0; i < all.size() && timer.isActive(); i++)
-  without timer.isActive is not (really)faster
---------------------------------------------------------------------------------
-
-<p> for new line in comments instead of ;
-
-my Stack class with changes @see |CHANGE|
+-faster calculation for AI.java??
+-show that the pc-opponent is thinking
+-implement ebbeflut as server or peer to peer playable
+-remove unused variable, imports ..
+-other bugs?

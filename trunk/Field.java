@@ -35,13 +35,11 @@ abstract public class Field
   }
 
   public Card pop()
-  { //if(cards.empty()) return null;
-    return (Card)cards.pop();
+  {return (Card)cards.pop();
   }
 
   public Card peek()
-  { //if(cards.empty()) return null;
-    return (Card)cards.peek();
+  { return (Card)cards.peek();
   }
   
   public int getSize()
@@ -52,7 +50,7 @@ abstract public class Field
   { return cards.empty();
   }
   
-  public void removeAll()
+  public void clear()
   { cards.removeAllElements();
   }
   
@@ -75,5 +73,15 @@ abstract public class Field
    
   public String toString()
   { return getLabel();
+  }
+
+  public String getContentsAsString()
+  {   StringBuffer sb=new StringBuffer();
+
+     for(int i=cards.size()-1; i>=0;i--)
+     {  sb.append(((Card)cards.elementAt(i)).toString()+" , ");      
+     }
+
+     return sb.toString();
   }
 }

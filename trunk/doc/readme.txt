@@ -1,1 +1,0 @@
-Ebbe und Flut is a german cardgame and it means:low tide and high tide

@@ -9,7 +9,7 @@
  * @author  peter
  */
 public class StartField extends OwnerField 
-{ Card firstCard=null;
+{ private Card firstCard=null;
     
   /** create a new instance from a special startstack class, in this class it is 
    *  secure that only one card each move will placed
@@ -23,6 +23,7 @@ public class StartField extends OwnerField
    */
   public void push(Card c)
   { firstCard=c;
+     c.setPosition(x,y);//da diese Zeile fehlte war mal eine Exception
     //super.push(c);
   }
   
@@ -36,8 +37,7 @@ public class StartField extends OwnerField
   
   public Card pop()
   { Card tmp=firstCard;
-    setLabel("Card was popped!");
-    firstCard=null;
+     firstCard=null;
     return tmp;
   }  
   

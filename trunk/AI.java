@@ -19,8 +19,6 @@
 public class AI extends Player
 {   private Board board;
     private MyTimer timer;
-    private long waitMillis=500;
-    private int playBackLoop=0;
     
     /** -1 is for the first player and means that if a move goes to a coordinate
       * with that integer than it is a "wrong move" and in calc you skip those moves
@@ -31,74 +29,42 @@ public class AI extends Player
     
     /** Creates a new instance of PcPlayer */
     public AI(java.awt.Color color,String name, int no) 
-    { super(Const.AI_PLAYER, color, name, no);
+    { super(Const.AI_PLAYER, color, name, no,false);
     }
     
     /** @param fromBeginning hope the pc wont need the case fromBeginning==false :-)
      */
-    public void moves()
+    public Path moves()
     { //test wether all possible moves are done from the other player
       if(Move.getAllPossible(EbbeFlut.getOtherPlayer(this)).size()>0) 
       { EbbeFlut.chronical.setTheOtherPlayerIsNotReady();        
-        return;
+         path.push(Const.doYourWorkMove);
+        return path;
       }
-      
-      System.out.println("\n"+getName()+"---------------");
+
+        long longValue;
+      if(no==Const.NO_1) longValue=Const.TIMER_TIME1;
+      else longValue=Const.TIMER_TIME2;
+
       //interrupt the AI if the methode calc is recursing too long
-      timer=new MyTimer(60000);      
+      timer=new MyTimer(longValue);      
       timer.start();
       
-       Path path,retPath;            
-       //Card startCard;       
-      
-      board=EbbeFlut.board.getBoard();
-      //before we can start => change the board from visible to an unvisible one:
+       board=EbbeFlut.board.getBoard();
+      //before we can start => CHANGE the board from visible to an unvisible one:
       Move.setBoard(board);             
-      //startCard=board.getStartStack(this.no).peek();
-      
-      //if(EbbeFlut.chronical.lastMoves() || !EbbeFlut.chronical.fromBeginning()) 
         
-      if(no==Const.NO_1)
-      { edge=-1; //retPath=calcWithPopping();
-      }
-      else
-      { edge=5;  //retPath=calcWithPopping();      
-      }
-      retPath=calcWithNoPopping();
-      if(!timer.isActive()) System.out.println("Wow! Move length is "+retPath.getSize());
+      if(no==Const.NO_1) edge=-1; 
+      else edge=5;
+
+      path=calcWithNoPopping();
       timer.deactivate();
-       
-      //System.out.println("his assessment is: "+retPath.getAssessment());
-      for(int i=0; i<retPath.getSize(); i++)
-        System.out.println(retPath.getElement(i).toString());
-            
-      //set/get back the real board 
+         
+      //make the CHANGE BACK -> set/get the "real" board
       Move.setBoard(EbbeFlut.board);
-      for(int i=0; i<retPath.getSize(); i++)
-      { 
-        loop(retPath,playBackLoop,i);
-        retPath.getElement(i).doIt();
-        if(playBackLoop>0) myWait(waitMillis);        
-      }        
+      return path;
     }
     
-    private void myWait(long millis)
-    { try
-      { Thread.sleep(millis);
-      }
-      catch(InterruptedException ie)
-      { System.out.println("sth goes wrong with the sleep operation");
-      }
-    }
-    
-    private void loop(Path retPath,int playBack,int i)
-    { for(int counter=0; counter<playBack; counter++)
-      { retPath.getElement(i).doIt();
-        myWait(waitMillis);
-        retPath.getElement(i).takeBack();        
-        myWait(waitMillis);                
-      }
-    }
     /** the assessment of a path
      */
     public int getAssess(int doItMoveRet,int oldPathSize)
@@ -182,54 +148,7 @@ public class AI extends Player
       
       move.takeBack();       
       return retPath;
-    }//calc
-    
-     
-  /** one turn may consist of many moves, so save them in path
-    */
-  class Path
-  {  private int assessment; //bewertung? |GERMAN|
-     private Stack nextMoves=new Stack(5,5);
-   
-    public Path()
-    {
-    }
-   
-     public int getAssessment()
-     { return assessment;
-     }
-   
-     public void setAssessment(int a)
-     { assessment=a;
-     }
-   
-     public void push(Move move)
-     { nextMoves.push(move);
-     }
-   
-     public Move elementAt(int i)
-     { return (Move)nextMoves.elementAt(i);
-     }
-   
-     public Move getElement(int i)
-     {  return (Move)nextMoves.elementAt(i);
-     }
-   
-     public int getSize()
-     { return nextMoves.size();
-     }
-   
-     public int size()
-     { return nextMoves.size();
-     }
-   
-     public Path getClone()
-     { Path p=new Path();
-       p.nextMoves=(Stack)nextMoves.clone();
-       p.assessment=assessment;
-       return p;
-     }
-   }
+  }//calc
   
   public String getPlayerName()
   { return super.getName();

@@ -24,13 +24,15 @@ public class HumanPlayer extends Player
     
     /** Creates a new instance of HumanPlayer */
     public HumanPlayer(Color color, String namePlayer,int no)
-    { super(Const.HUMAN_PLAYER,color, namePlayer, no);
+    { super(Const.HUMAN_PLAYER,color, namePlayer, no,true);
     }    
     
-    public void moves()
+    public Path moves()
     {  EbbeFlut.chronical.newTurn(EbbeFlut.chronical.fromBeginning());
      
      while(!EbbeFlut.chronical.isTurnFinished() && (!EbbeFlut.chronical.isGameFinished() || EbbeFlut.chronical.lastMoves()) );          
+
+       return path;
     }
     
 }

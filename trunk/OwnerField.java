@@ -48,8 +48,7 @@ public class OwnerField extends Field
   
   public void setLabel(String str)
   { if(action!=null) action.actionPerformed(new ActionEvent(this,Const.OwnerFieldID,str));
-  }
-  
+  }  
   
   public Card pop()
   { Card tmp=super.pop();
@@ -59,8 +58,7 @@ public class OwnerField extends Field
   
   public String getLabel() 
   { return getSize()+"";
-  }
-  
+  }  
   
   protected Object getInstance(int x,int y,Player p)
   { return new OwnerField(x,y,p);
