@@ -1,0 +1,44 @@
+
+folgende Verbesserungen sind noetig/moeglich:
+-Zugverkuerzung fuer Ai
+-Board nicht nach jedem Zug fuer Ai clonen, besser nur die Zuege vom Gegner
+ darauf ausfuehren lassen => clonen dauert aber nur wenige milli sekunden
+ daher wuerde der Aufwand ganz schoen gross sein
+-getAllMoves ist nur nach dem ersten Zug noetig -> dann kann man schnellere 
+ Methode schreiben -> Move.getPossible, aber welche fallen dann weg??
+-logfile fuer die Partie schreiben-> also Zug von bis ..., -> abrufbar im Program -jederzeit
+-ebbe als server, bzw netzfaehig machen, eventuell chat fenster?
+-einstellungen playBackloop für jeden spieler speichern
+-cancel button bei settings
+-komplette Path aller Moves nach jeden Zug speichern bzw. fuer netzfaigkeit implementieren
+ damit man also nur den Path schicken muss, und dieser dann nur noch auf dem 
+ fernen client ausgefuehrt werden muss.
+-thinking vom computer anzeigen
+-anzeigen wieviele karten und welcher farbe diese sind
+-spielregel realisieren, das vor dem platzieren auch gesetzt werden kann
+-wie kann man am rand (vor gleiche karten=> zug moeglich) eine karte loeschen
+ (wrong move)
+-andere Bugs??
+-loesche nicht mehr verwendete variablen, imports etc.
+
+schon ausprobierte verbesserungen:
+
+in Field
+  try catch(EmptyStackException statt if(stack.empty 
+  dies ist aber langsamer da das Field meist leer ist
+
+in Move.getAllPossible
+  move.toX=m; move.toY=n-1; is the same as: 
+  move=new Move(tmp, player, m,  n-1);          //but you have to "new Move" it !!
+in AI
+  for(int i=0; i < all.size() && timer.isActive(); i++)
+  without timer.isActive is not (realy)faster
+in Stack
+  better peek, better constuctors
+CHANGE:
+|GERMAN|
+|CHEAT|
+
+<p> for new line in comments instead of ;
+
+my Stack class with changes @see |CHANGE|
